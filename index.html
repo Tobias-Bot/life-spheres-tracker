@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Life Spheres Tracker</title>
+    <style>
+        :root {
+            --body: #8ecae6;
+            --mental: #ffb4a2;
+            --meaning: #e9c46a;
+            --relationships: #f4a261;
+            --growth: #2a9d8f;
+            --work: #e76f51;
+            --nature: #90be6d;
+            --selfcare: #9d4edd;
+            --background: #121212;
+            --card-bg: #1e1e1e;
+            --text: #e0e0e0;
+            --border: #333;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            transition: all 0.3s ease;
+        }
+
+        body {
+            background-color: var(--background);
+            color: var(--text);
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            background: linear-gradient(90deg, var(--body), var(--mental), var(--meaning), var(--relationships), var(--growth), var(--work), var(--nature), var(--selfcare));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.8;
+        }
+
+        .date-display {
+            margin: 20px 0;
+            text-align: center;
+            font-size: 1.2rem;
+        }
+
+        .spheres-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .sphere-card {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            position: relative;
+            overflow: hidden;
+            border: 1px solid var(--border);
+        }
+
+        .sphere-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .sphere-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+        }
+
+        .sphere-body::before { background-color: var(--body); }
+        .sphere-mental::before { background-color: var(--mental); }
+        .sphere-meaning::before { background-color: var(--meaning); }
+        .sphere-relationships::before { background-color: var(--relationships); }
+        .sphere-growth::before { background-color: var(--growth); }
+        .sphere-work::before { background-color: var(--work); }
+        .sphere-nature::before { background-color: var(--nature); }
+        .sphere-selfcare::before { background-color: var(--selfcare); }
+
+        .sphere-title {
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .sphere-icon {
+            font-size: 1.5rem;
+        }
+
+        .progress-container {
+            height: 10px;
+            background-color: #333;
+            border-radius: 5px;
+            margin: 15px 0;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            border-radius: 5px;
+            transition: width 0.5s ease;
+        }
+
+        .progress-body { background-color: var(--body); }
+        .progress-mental { background-color: var(--mental); }
+        .progress-meaning { background-color: var(--meaning); }
+        .progress-relationships { background-color: var(--relationships); }
+        .progress-growth { background-color: var(--growth); }
+        .progress-work { background-color: var(--work); }
+        .progress-nature { background-color: var(--nature); }
+        .progress-selfcare { background-color: var(--selfcare); }
+
+        .progress-text {
+            text-align: right;
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        .toggle-btn {
+            background-color: #333;
+            border: none;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            margin-top: 10px;
+        }
+
+        .toggle-btn:hover {
+            background-color: #444;
+        }
+
+        .toggle-btn.active {
+            background-color: #4CAF50;
+        }
+
+        .actions {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 30px 0;
+        }
+
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .btn-secondary {
+            background-color: #555;
+            color: white;
+        }
+
+        .btn:hover {
+            opacity: 0.9;
+            transform: scale(1.05);
+        }
+
+        .analysis-section {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            padding: 25px;
+            margin-top: 30px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .analysis-title {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .priority-sphere {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            background-color: rgba(255, 0, 0, 0.1);
+            border-radius: 8px;
+            margin-top: 15px;
+            border-left: 4px solid #ff5252;
+        }
+
+        .priority-icon {
+            font-size: 2rem;
+        }
+
+        .priority-text {
+            flex: 1;
+        }
+
+        .priority-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .export-section {
+            margin-top: 30px;
+            text-align: center;
+        }
+
+        .export-btn {
+            background-color: var(--growth);
+            color: white;
+        }
+
+        .calendar-view {
+            margin-top: 30px;
+        }
+
+        .calendar {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 5px;
+            margin-top: 15px;
+        }
+
+        .calendar-day {
+            background-color: var(--card-bg);
+            border-radius: 5px;
+            padding: 10px;
+            text-align: center;
+            min-height: 60px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .calendar-day.active {
+            border: 2px solid #4CAF50;
+        }
+
+        .day-spheres {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2px;
+            justify-content: center;
+        }
+
+        .sphere-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: var(--card-bg);
+            padding: 30px;
+            border-radius: 12px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .data-export {
+            background-color: #222;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-family: monospace;
+            white-space: pre-wrap;
+            word-break: break-all;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            transform: translateX(150%);
+            transition: transform 0.3s ease;
+            z-index: 1001;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        @media (max-width: 768px) {
+            .spheres-grid {
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            }
+            
+            .calendar {
+                grid-template-columns: repeat(7, 1fr);
+            }
+            
+            .calendar-day {
+                padding: 5px;
+                min-height: 50px;
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Life Spheres Tracker</h1>
+        <p class="subtitle">Отслеживайте баланс всех сфер вашей жизни</p>
+    </header>
+
+    <div class="date-display">
+        <h2 id="current-date">Загрузка...</h2>
+    </div>
+
+    <div class="spheres-grid" id="spheres-container">
+        <!-- Сферы будут добавлены через JavaScript -->
+    </div>
+
+    <div class="actions">
+        <button class="btn btn-primary" id="save-btn">
+            <span>💾</span> Сохранить сегодняшний прогресс
+        </button>
+        <button class="btn btn-secondary" id="calendar-btn">
+            <span>📅</span> Показать календарь
+        </button>
+    </div>
+
+    <div class="analysis-section">
+        <h3 class="analysis-title">Анализ вашего баланса</h3>
+        <div id="analysis-content">
+            <!-- Анализ будет добавлен через JavaScript -->
+        </div>
+    </div>
+
+    <div class="export-section">
+        <button class="btn export-btn" id="export-btn">
+            <span>📤</span> Выгрузить данные для анализа
+        </button>
+    </div>
+
+    <!-- Модальное окно календаря -->
+    <div class="modal" id="calendar-modal">
+        <div class="modal-content">
+            <span class="close-btn" id="close-calendar">&times;</span>
+            <h3 class="modal-title">Календарь активности</h3>
+            <div class="calendar" id="calendar-container">
+                <!-- Календарь будет добавлен через JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно экспорта данных -->
+    <div class="modal" id="export-modal">
+        <div class="modal-content">
+            <span class="close-btn" id="close-export">&times;</span>
+            <h3 class="modal-title">Экспорт данных</h3>
+            <p>Скопируйте данные ниже и отправьте для анализа:</p>
+            <div class="data-export" id="export-data">
+                <!-- Данные будут добавлены через JavaScript -->
+            </div>
+            <button class="btn btn-primary" id="copy-btn">
+                <span>📋</span> Скопировать данные
+            </button>
+        </div>
+    </div>
+
+    <!-- Уведомление -->
+    <div class="notification" id="notification">
+        Данные успешно сохранены!
+    </div>
+
+    <script>
+        // Определение сфер жизни
+        const spheres = [
+            { id: 'body', name: 'Тело', color: 'body', icon: '💪' },
+            { id: 'mental', name: 'Ментальное здоровье', color: 'mental', icon: '🧠' },
+            { id: 'meaning', name: 'Смыслы', color: 'meaning', icon: '✨' },
+            { id: 'relationships', name: 'Отношения', color: 'relationships', icon: '👥' },
+            { id: 'growth', name: 'Личностный рост и хобби', color: 'growth', icon: '🌱' },
+            { id: 'work', name: 'Дело и финансы', color: 'work', icon: '💼' },
+            { id: 'nature', name: 'Природа', color: 'nature', icon: '🌳' },
+            { id: 'selfcare', name: 'Забота о себе', color: 'selfcare', icon: '🛁' }
+        ];
+
+        // Инициализация данных
+        let userData = JSON.parse(localStorage.getItem('lifeSpheresData')) || {};
+
+        // Получение текущей даты
+        const today = new Date();
+        const currentMonth = today.getMonth();
+        const currentYear = today.getFullYear();
+        const todayKey = today.toISOString().split('T')[0];
+        const monthKey = `${currentYear}-${currentMonth + 1}`;
+
+        // Инициализация данных за текущий месяц, если их нет
+        if (!userData[monthKey]) {
+            userData[monthKey] = {};
+        }
+
+        // Отображение текущей даты
+        document.getElementById('current-date').textContent = today.toLocaleDateString('ru-RU', { 
+            weekday: 'long', 
+            year: 'numeric', 
+            month: 'long', 
+            day: 'numeric' 
+        });
+
+        // Создание карточек сфер
+        const spheresContainer = document.getElementById('spheres-container');
+        
+        spheres.forEach(sphere => {
+            const sphereCard = document.createElement('div');
+            sphereCard.className = `sphere-card sphere-${sphere.color}`;
+            
+            // Расчет процента выполнения за месяц
+            const monthlyPercentage = calculateMonthlyPercentage(sphere.id);
+            
+            sphereCard.innerHTML = `
+                <div class="sphere-title">
+                    <span>${sphere.icon} ${sphere.name}</span>
+                    <span class="sphere-icon">${sphere.icon}</span>
+                </div>
+                <div class="progress-container">
+                    <div class="progress-bar progress-${sphere.color}" style="width: ${monthlyPercentage}%"></div>
+                </div>
+                <div class="progress-text">${monthlyPercentage}% за месяц</div>
+                <button class="toggle-btn ${isSphereActiveToday(sphere.id) ? 'active' : ''}" data-sphere="${sphere.id}">
+                    ${isSphereActiveToday(sphere.id) ? '✅ Отмечено сегодня' : '☐ Отметить сегодня'}
+                </button>
+            `;
+            
+            spheresContainer.appendChild(sphereCard);
+        });
+
+        // Обработчики событий для кнопок отметки
+        document.querySelectorAll('.toggle-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                const sphereId = this.getAttribute('data-sphere');
+                toggleSphereForToday(sphereId);
+                this.textContent = isSphereActiveToday(sphereId) ? '✅ Отмечено сегодня' : '☐ Отметить сегодня';
+                this.classList.toggle('active');
+                
+                // Обновляем проценты
+                updateProgressBars();
+                
+                // Показываем уведомление
+                showNotification('Данные обновлены!');
+            });
+        });
+
+        // Обработчик кнопки сохранения
+        document.getElementById('save-btn').addEventListener('click', function() {
+            saveData();
+            showNotification('Прогресс сохранен!');
+        });
+
+        // Обработчики модальных окон
+        document.getElementById('calendar-btn').addEventListener('click', function() {
+            showCalendar();
+            document.getElementById('calendar-modal').style.display = 'flex';
+        });
+
+        document.getElementById('close-calendar').addEventListener('click', function() {
+            document.getElementById('calendar-modal').style.display = 'none';
+        });
+
+        document.getElementById('export-btn').addEventListener('click', function() {
+            showExportData();
+            document.getElementById('export-modal').style.display = 'flex';
+        });
+
+        document.getElementById('close-export').addEventListener('click', function() {
+            document.getElementById('export-modal').style.display = 'none';
+        });
+
+        document.getElementById('copy-btn').addEventListener('click', function() {
+            copyExportData();
+            showNotification('Данные скопированы в буфер обмена!');
+        });
+
+        // Закрытие модальных окон при клике вне их
+        window.addEventListener('click', function(event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.style.display = 'none';
+            }
+        });
+
+        // Функции
+        function isSphereActiveToday(sphereId) {
+            if (!userData[monthKey][todayKey]) {
+                return false;
+            }
+            return userData[monthKey][todayKey].includes(sphereId);
+        }
+
+        function toggleSphereForToday(sphereId) {
+            if (!userData[monthKey][todayKey]) {
+                userData[monthKey][todayKey] = [];
+            }
+            
+            const index = userData[monthKey][todayKey].indexOf(sphereId);
+            if (index > -1) {
+                userData[monthKey][todayKey].splice(index, 1);
+            } else {
+                userData[monthKey][todayKey].push(sphereId);
+            }
+            
+            saveData();
+            updateAnalysis();
+        }
+
+        function calculateMonthlyPercentage(sphereId) {
+            const monthData = userData[monthKey];
+            const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+            let activeDays = 0;
+            
+            for (let day = 1; day <= daysInMonth; day++) {
+                const dateKey = `${currentYear}-${currentMonth + 1}-${day.toString().padStart(2, '0')}`;
+                if (monthData[dateKey] && monthData[dateKey].includes(sphereId)) {
+                    activeDays++;
+                }
+            }
+            
+            return Math.round((activeDays / daysInMonth) * 100);
+        }
+
+        function updateProgressBars() {
+            spheres.forEach(sphere => {
+                const percentage = calculateMonthlyPercentage(sphere.id);
+                const progressBar = document.querySelector(`.sphere-${sphere.color} .progress-bar`);
+                const progressText = document.querySelector(`.sphere-${sphere.color} .progress-text`);
+                
+                if (progressBar) {
+                    progressBar.style.width = `${percentage}%`;
+                }
+                
+                if (progressText) {
+                    progressText.textContent = `${percentage}% за месяц`;
+                }
+            });
+        }
+
+        function saveData() {
+            localStorage.setItem('lifeSpheresData', JSON.stringify(userData));
+            updateAnalysis();
+        }
+
+        function updateAnalysis() {
+            const analysisContent = document.getElementById('analysis-content');
+            analysisContent.innerHTML = '';
+            
+            // Рассчитываем проценты для всех сфер
+            const spherePercentages = spheres.map(sphere => ({
+                id: sphere.id,
+                name: sphere.name,
+                percentage: calculateMonthlyPercentage(sphere.id),
+                icon: sphere.icon
+            }));
+            
+            // Сортируем по возрастанию процента (наименьший первый)
+            spherePercentages.sort((a, b) => a.percentage - b.percentage);
+            
+            // Находим сферу с наименьшим процентом
+            const lowestSphere = spherePercentages[0];
+            
+            // Создаем элемент приоритетной сферы
+            const priorityElement = document.createElement('div');
+            priorityElement.className = 'priority-sphere';
+            priorityElement.innerHTML = `
+                <div class="priority-icon">${lowestSphere.icon}</div>
+                <div class="priority-text">
+                    <div class="priority-title">Сфера, требующая внимания: ${lowestSphere.name}</div>
+                    <div>Текущий прогресс: ${lowestSphere.percentage}%. Рекомендуем уделить больше внимания этой сфере.</div>
+                </div>
+            `;
+            
+            analysisContent.appendChild(priorityElement);
+            
+            // Добавляем общую статистику
+            const totalPercentage = spherePercentages.reduce((sum, sphere) => sum + sphere.percentage, 0) / spheres.length;
+            const overallElement = document.createElement('div');
+            overallElement.style.marginTop = '20px';
+            overallElement.style.padding = '15px';
+            overallElement.style.backgroundColor = 'rgba(76, 175, 80, 0.1)';
+            overallElement.style.borderRadius = '8px';
+            overallElement.style.borderLeft = '4px solid #4CAF50';
+            overallElement.innerHTML = `
+                <div style="font-weight: bold; margin-bottom: 5px;">Общий баланс: ${Math.round(totalPercentage)}%</div>
+                <div>${getBalanceMessage(totalPercentage)}</div>
+            `;
+            
+            analysisContent.appendChild(overallElement);
+        }
+
+        function getBalanceMessage(percentage) {
+            if (percentage >= 80) {
+                return "Отличный баланс! Вы уделяете внимание всем сферам жизни.";
+            } else if (percentage >= 60) {
+                return "Хороший баланс. Есть небольшие возможности для улучшения.";
+            } else if (percentage >= 40) {
+                return "Средний баланс. Попробуйте распределить внимание более равномерно.";
+            } else {
+                return "Низкий баланс. Рекомендуем пересмотреть приоритеты и уделить внимание отстающим сферам.";
+            }
+        }
+
+        function showCalendar() {
+            const calendarContainer = document.getElementById('calendar-container');
+            calendarContainer.innerHTML = '';
+            
+            // Создаем заголовки дней недели
+            const daysOfWeek = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'];
+            daysOfWeek.forEach(day => {
+                const dayElement = document.createElement('div');
+                dayElement.style.fontWeight = 'bold';
+                dayElement.textContent = day;
+                calendarContainer.appendChild(dayElement);
+            });
+            
+            // Получаем первый день месяца и количество дней
+            const firstDay = new Date(currentYear, currentMonth, 1);
+            const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+            
+            // Добавляем пустые ячейки для дней до первого дня месяца
+            for (let i = 0; i < (firstDay.getDay() + 6) % 7; i++) {
+                const emptyElement = document.createElement('div');
+                calendarContainer.appendChild(emptyElement);
+            }
+            
+            // Добавляем дни месяца
+            for (let day = 1; day <= daysInMonth; day++) {
+                const dayElement = document.createElement('div');
+                dayElement.className = 'calendar-day';
+                
+                const dateKey = `${currentYear}-${currentMonth + 1}-${day.toString().padStart(2, '0')}`;
+                const isToday = dateKey === todayKey;
+                
+                if (isToday) {
+                    dayElement.classList.add('active');
+                }
+                
+                dayElement.innerHTML = `
+                    <div>${day}</div>
+                    <div class="day-spheres">
+                        ${getDaySpheresDots(dateKey)}
+                    </div>
+                `;
+                
+                calendarContainer.appendChild(dayElement);
+            }
+        }
+
+        function getDaySpheresDots(dateKey) {
+            if (!userData[monthKey][dateKey]) {
+                return '';
+            }
+            
+            return userData[monthKey][dateKey].map(sphereId => {
+                const sphere = spheres.find(s => s.id === sphereId);
+                return `<div class="sphere-dot" style="background-color: var(--${sphere.color})"></div>`;
+            }).join('');
+        }
+
+        function showExportData() {
+            const exportDataElement = document.getElementById('export-data');
+            exportDataElement.textContent = JSON.stringify(userData, null, 2);
+        }
+
+        function copyExportData() {
+            const exportData = document.getElementById('export-data').textContent;
+            navigator.clipboard.writeText(exportData).then(() => {
+                console.log('Данные скопированы в буфер обмена');
+            }).catch(err => {
+                console.error('Ошибка копирования: ', err);
+            });
+        }
+
+        function showNotification(message) {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+
+        // Инициализация анализа при загрузке
+        updateAnalysis();
+    </script>
+</body>
+</html>
