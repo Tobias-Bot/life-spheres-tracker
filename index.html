@@ -6,100 +6,105 @@
     <title>Трекер баланса и развития</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         :root {
             --primary-light: #fffdfa;
             --primary-dark: #0a291e;
             --accent: #553922;
-            --light-opacity: 0.45;
-            --dark-opacity: 0.45;
-            --accent-opacity: 0.1;
+            --bg-light: rgba(255, 253, 250, 0.4);
+            --bg-dark: rgba(10, 41, 30, 0.4);
+            --bg-accent: rgba(85, 57, 34, 0.2);
         }
 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
         }
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, 
-                rgba(255, 253, 250, 0.45) 0%, 
-                rgba(10, 41, 30, 0.45) 100%);
+            background: linear-gradient(135deg, var(--bg-light) 0%, var(--bg-dark) 100%);
             color: var(--primary-dark);
             min-height: 100vh;
-            transition: all 0.3s ease;
+            line-height: 1.4;
         }
 
         .container {
-            max-width: 400px;
+            max-width: 1200px;
             margin: 0 auto;
             padding: 20px;
             min-height: 100vh;
-        }
-
-        .header {
-            text-align: center;
-            margin-bottom: 20px;
-            animation: fadeInDown 0.6s ease;
-        }
-
-        .header-content {
             display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            margin-bottom: 15px;
+            flex-direction: column;
         }
 
-        .app-icon {
-            font-size: 24px;
+        @media (max-width: 768px) {
+            .container {
+                padding: 16px;
+            }
         }
 
-        .header h1 {
-            font-size: 20px;
-            color: var(--primary-dark);
-            margin: 0;
+        .app-info {
+            text-align: right;
+            margin-bottom: 20px;
+        }
+
+        .app-info-button {
+            background: none;
+            border: none;
+            color: var(--accent);
+            font-size: 14px;
+            opacity: 0.7;
+            cursor: pointer;
+            text-decoration: underline;
+            padding: 8px 16px;
         }
 
         .current-month {
             text-align: center;
-            font-size: 16px;
+            font-size: 20px;
             font-weight: 600;
-            margin-bottom: 15px;
+            margin-bottom: 30px;
             color: var(--primary-dark);
-        }
-
-        .tabs {
             display: flex;
-            background: rgba(255, 253, 250, 0.8);
-            border-radius: 15px;
-            padding: 5px;
-            margin-bottom: 20px;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
         }
 
-        .tab-button {
+        .season-icon {
+            font-size: 24px;
+            order: 2;
+        }
+
+        .month-name {
+            order: 1;
+        }
+
+        .main-content {
             flex: 1;
-            padding: 12px;
-            border: none;
-            background: transparent;
-            border-radius: 12px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-weight: 500;
-            color: var(--primary-dark);
+            margin-bottom: 80px;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
         }
 
-        .tab-button.active {
-            background: var(--primary-dark);
-            color: var(--primary-light);
-            box-shadow: 0 2px 8px rgba(10, 41, 30, 0.3);
+        @media (min-width: 1024px) {
+            .main-content {
+                grid-template-columns: 1fr 1fr;
+            }
+            
+            .main-content > * {
+                min-height: 400px;
+            }
         }
 
         .tab-content {
             display: none;
-            animation: fadeIn 0.5s ease;
+            animation: fadeIn 0.3s ease;
         }
 
         .tab-content.active {
@@ -112,23 +117,35 @@
             align-items: center;
             margin-bottom: 20px;
             background: rgba(255, 253, 250, 0.8);
-            padding: 15px;
-            border-radius: 15px;
+            padding: 20px;
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 253, 250, 0.5);
         }
 
         .date-selector button {
             background: var(--primary-dark);
             color: var(--primary-light);
             border: none;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
+            width: 48px;
+            height: 48px;
+            border-radius: 24px;
             cursor: pointer;
-            transition: transform 0.2s ease;
+            transition: all 0.2s ease;
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .date-selector button:hover:not(:disabled) {
+            background: var(--accent);
+            transform: scale(1.05);
         }
 
         .date-selector button:disabled {
-            background: #cccccc;
+            background: #E5E7EB;
+            color: #9CA3AF;
             cursor: not-allowed;
         }
 
@@ -138,48 +155,46 @@
 
         #currentDate {
             font-weight: 600;
-            font-size: 16px;
+            font-size: 18px;
+            color: var(--primary-dark);
         }
 
         .categories-list {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 12px;
             margin-bottom: 20px;
+        }
+
+        @media (min-width: 768px) {
+            .categories-list {
+                grid-template-columns: 1fr 1fr;
+            }
         }
 
         .category-item {
             background: rgba(255, 253, 250, 0.9);
-            margin-bottom: 12px;
-            padding: 18px;
-            border-radius: 15px;
+            padding: 20px;
+            border-radius: 16px;
             cursor: pointer;
             transition: all 0.3s ease;
             border: 2px solid transparent;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .category-item::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(85, 57, 34, 0.1), transparent);
-            transition: left 0.5s ease;
-        }
-
-        .category-item:hover::before {
-            left: 100%;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
         }
 
         .category-item:hover {
             transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(10, 41, 30, 0.2);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+            border-color: var(--accent);
+        }
+
+        .category-item:active {
+            transform: translateY(0);
         }
 
         .category-item.completed {
             border-color: var(--accent);
-            background: rgba(85, 57, 34, 0.05);
+            background: rgba(85, 57, 34, 0.1);
         }
 
         .category-header {
@@ -203,6 +218,7 @@
             align-items: center;
             justify-content: center;
             transition: all 0.3s ease;
+            flex-shrink: 0;
         }
 
         .category-item.completed .category-checkbox {
@@ -214,6 +230,7 @@
             content: '✓';
             color: white;
             font-weight: bold;
+            font-size: 14px;
         }
 
         .category-description {
@@ -222,150 +239,125 @@
             line-height: 1.4;
         }
 
-        .save-button {
-            width: 100%;
-            padding: 16px;
-            background: var(--primary-dark);
-            color: var(--primary-light);
-            border: none;
-            border-radius: 15px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(10, 41, 30, 0.3);
-        }
-
-        .save-button:active {
-            transform: scale(0.98);
-        }
-
-        .save-button:hover {
-            background: var(--accent);
-        }
-
         .progress-section {
             background: rgba(255, 253, 250, 0.9);
-            padding: 20px;
-            border-radius: 15px;
+            padding: 24px;
+            border-radius: 16px;
             margin-bottom: 20px;
             text-align: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 253, 250, 0.5);
         }
 
         .progress-text {
-            font-size: 16px;
+            font-size: 18px;
             font-weight: 600;
             color: var(--primary-dark);
-            margin-bottom: 10px;
+            margin-bottom: 16px;
         }
 
         .progress-bar {
             width: 100%;
             height: 12px;
-            background-color: rgba(255, 253, 250, 0.3);
-            border-radius: 10px;
+            background-color: rgba(0, 0, 0, 0.1);
+            border-radius: 6px;
             overflow: hidden;
-            margin: 10px 0;
+            margin: 16px 0;
         }
 
         .progress-fill {
             height: 100%;
             background: linear-gradient(90deg, var(--accent), var(--primary-dark));
-            border-radius: 10px;
+            border-radius: 6px;
             transition: width 0.5s ease;
             width: 0%;
         }
 
         .export-buttons {
             display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        @media (max-width: 768px) {
+            .export-buttons {
+                flex-direction: column;
+            }
         }
 
         .export-button {
             flex: 1;
-            padding: 12px;
+            padding: 16px 20px;
             background: var(--primary-dark);
             color: var(--primary-light);
             border: none;
-            border-radius: 10px;
+            border-radius: 12px;
             cursor: pointer;
             transition: all 0.3s ease;
-            font-weight: 500;
+            font-weight: 600;
+            font-size: 16px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
         }
 
         .export-button:hover {
             background: var(--accent);
             transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        .export-button:active {
+            transform: translateY(0);
         }
 
         .charts-container {
-            display: flex;
-            flex-direction: column;
+            display: grid;
+            grid-template-columns: 1fr;
             gap: 20px;
+        }
+
+        @media (min-width: 768px) {
+            .charts-container {
+                grid-template-columns: 1fr 1fr;
+            }
         }
 
         .chart-container {
             background: rgba(255, 253, 250, 0.9);
             padding: 20px;
-            border-radius: 15px;
-            position: relative;
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 253, 250, 0.5);
         }
 
         .chart-title {
-            font-size: 14px;
+            font-size: 16px;
             font-weight: 600;
-            margin-bottom: 15px;
+            margin-bottom: 16px;
             text-align: center;
             color: var(--primary-dark);
-        }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-            margin-top: 20px;
-        }
-
-        .stat-item {
-            background: rgba(255, 253, 250, 0.9);
-            padding: 15px;
-            border-radius: 12px;
-            text-align: center;
-        }
-
-        .stat-value {
-            font-size: 24px;
-            font-weight: bold;
-            color: var(--accent);
-            margin-bottom: 5px;
-        }
-
-        .stat-label {
-            font-size: 12px;
-            color: var(--primary-dark);
-            opacity: 0.7;
         }
 
         .category-percentages {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-top: 15px;
+            grid-template-columns: 1fr;
+            gap: 8px;
+            margin-top: 16px;
         }
 
         .category-percentage {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 8px 12px;
+            padding: 12px 16px;
             background: rgba(255, 253, 250, 0.7);
             border-radius: 8px;
-            font-size: 12px;
+            font-size: 14px;
+            border: 1px solid rgba(0, 0, 0, 0.05);
         }
 
         .category-percentage-name {
             font-weight: 500;
+            color: var(--primary-dark);
         }
 
         .category-percentage-value {
@@ -375,12 +367,14 @@
 
         .recommendations-list {
             background: rgba(255, 253, 250, 0.9);
-            border-radius: 15px;
-            padding: 20px;
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 253, 250, 0.5);
         }
 
         .recommendation-item {
-            padding: 15px;
+            padding: 16px;
             margin-bottom: 12px;
             background: rgba(255, 253, 250, 0.9);
             border-left: 4px solid var(--accent);
@@ -390,6 +384,8 @@
         .recommendation-item h4 {
             color: var(--primary-dark);
             margin-bottom: 8px;
+            font-size: 16px;
+            font-weight: 600;
         }
 
         .recommendation-item p {
@@ -400,54 +396,119 @@
 
         .inspiration-quote {
             background: rgba(85, 57, 34, 0.1);
-            padding: 15px;
-            margin: 15px 0;
-            border-radius: 10px;
+            padding: 16px;
+            margin: 20px 0;
+            border-radius: 12px;
             border-left: 4px solid var(--accent);
             font-style: italic;
             text-align: center;
+            font-size: 15px;
+            color: var(--primary-dark);
         }
 
         .info-content {
             background: rgba(255, 253, 250, 0.9);
-            border-radius: 15px;
-            padding: 20px;
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 253, 250, 0.5);
         }
 
         .info-section {
-            margin-bottom: 20px;
+            margin-bottom: 24px;
         }
 
         .info-section h3 {
             color: var(--accent);
-            margin-bottom: 10px;
-            font-size: 16px;
+            margin-bottom: 12px;
+            font-size: 18px;
+            font-weight: 600;
         }
 
         .info-section p {
             color: var(--primary-dark);
             line-height: 1.5;
-            font-size: 14px;
-            margin-bottom: 8px;
+            font-size: 15px;
+            margin-bottom: 10px;
         }
 
         .developer {
             text-align: center;
-            margin-top: 20px;
-            padding-top: 15px;
-            border-top: 1px solid rgba(10, 41, 30, 0.2);
+            margin-top: 24px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(0, 0, 0, 0.1);
         }
 
         .made-with-love {
             font-style: italic;
             color: var(--accent);
-            margin-bottom: 10px;
+            margin-bottom: 12px;
+            font-size: 15px;
+        }
+
+        .tabs {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(255, 253, 250, 0.95);
+            display: flex;
+            padding: 12px 20px;
+            border-top: 1px solid rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            justify-content: center;
+        }
+
+        @media (min-width: 768px) {
+            .tabs {
+                position: static;
+                background: transparent;
+                border-top: none;
+                backdrop-filter: none;
+                padding: 0;
+                margin-bottom: 30px;
+            }
+        }
+
+        .tab-button {
+            padding: 14px 24px;
+            border: none;
+            background: transparent;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            color: var(--primary-dark);
+            font-size: 16px;
+            margin: 0 8px;
+        }
+
+        .tab-button:hover {
+            background: rgba(10, 41, 30, 0.1);
+        }
+
+        .tab-button.active {
+            background: var(--primary-dark);
+            color: var(--primary-light);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .stats-export-container {
+            background: rgba(255, 253, 250, 0.95);
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 253, 250, 0.5);
+            position: relative;
+            max-width: 800px;
+            margin: 0 auto;
         }
 
         .watermark {
             position: absolute;
-            bottom: 10px;
-            right: 10px;
+            bottom: 15px;
+            right: 15px;
             color: rgba(0, 0, 0, 0.3);
             font-size: 12px;
             font-style: italic;
@@ -458,57 +519,87 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        @keyframes fadeInDown {
-            from { opacity: 0; transform: translateY(-20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
         .fade-in {
-            animation: fadeIn 0.5s ease;
+            animation: fadeIn 0.3s ease;
         }
 
         .notification {
             position: fixed;
             top: 20px;
-            right: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-100%);
             background: var(--primary-dark);
             color: var(--primary-light);
-            padding: 12px 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(10, 41, 30, 0.3);
-            transform: translateX(150%);
+            padding: 16px 24px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
             transition: transform 0.3s ease;
             z-index: 1000;
+            font-size: 15px;
+            font-weight: 500;
+            max-width: 90%;
+            text-align: center;
         }
 
         .notification.show {
-            transform: translateX(0);
+            transform: translateX(-50%) translateY(0);
         }
 
-        .hidden {
-            display: none;
+        /* Поддержка темной темы */
+        @media (prefers-color-scheme: dark) {
+            body {
+                background: linear-gradient(135deg, rgba(26, 26, 26, 0.4) 0%, rgba(10, 41, 30, 0.4) 100%);
+                color: #ffffff;
+            }
+            
+            .date-selector,
+            .category-item,
+            .progress-section,
+            .chart-container,
+            .recommendations-list,
+            .info-content,
+            .stats-export-container,
+            .tabs {
+                background: rgba(40, 40, 40, 0.9);
+                border-color: rgba(255, 255, 255, 0.1);
+            }
+            
+            .category-percentage {
+                background: rgba(50, 50, 50, 0.8);
+            }
+            
+            .progress-bar {
+                background-color: rgba(255, 255, 255, 0.1);
+            }
+            
+            .category-description {
+                color: rgba(255, 255, 255, 0.7);
+            }
+            
+            .info-section p {
+                color: rgba(255, 255, 255, 0.9);
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <header class="header">
-            <div class="header-content">
-                <div class="app-icon">🌱</div>
-                <h1>Трекер баланса и развития</h1>
-            </div>
-        </header>
+        <div class="app-info">
+            <button class="app-info-button" id="infoButton">о приложении</button>
+        </div>
 
-        <div class="current-month" id="currentMonth"></div>
+        <div class="current-month">
+            <span class="month-name" id="monthName"></span>
+            <span class="season-icon" id="seasonIcon">🌱</span>
+        </div>
 
         <div class="tabs">
             <button class="tab-button active" data-tab="tracker">Трекер</button>
             <button class="tab-button" data-tab="analytics">Аналитика</button>
             <button class="tab-button" data-tab="recommendations">Советы</button>
-            <button class="tab-button" data-tab="info">ℹ️</button>
         </div>
 
-        <main class="main">
+        <div class="main-content">
             <div id="tracker" class="tab-content active">
                 <div class="date-selector">
                     <button id="prevDay">←</button>
@@ -519,8 +610,6 @@
                 <div class="categories-list" id="categoriesList">
                     <!-- Категории будут загружены через JavaScript -->
                 </div>
-                
-                <button class="save-button" id="saveButton">Сохранить день</button>
             </div>
 
             <div id="analytics" class="tab-content">
@@ -532,13 +621,12 @@
                 </div>
 
                 <div class="export-buttons">
-                    <button class="export-button" id="downloadStats">📥 Скачать</button>
-                    <button class="export-button" id="shareStats">📤 Поделиться</button>
+                    <button class="export-button" id="downloadStats">📥 Скачать статистику</button>
+                    <button class="export-button" id="shareStats">📤 Поделиться в Telegram</button>
                 </div>
 
                 <div class="charts-container">
-                    <div class="chart-container" id="statsForExport">
-                        <div class="watermark">тг: maytrue</div>
+                    <div class="chart-container">
                         <div class="chart-title">Прогресс по сферам</div>
                         <canvas id="progressChart"></canvas>
                         <div class="category-percentages" id="categoryPercentages">
@@ -568,7 +656,7 @@
                         <h3>Как пользоваться</h3>
                         <p>1. В разделе "Трекер" отмечайте сферы жизни, в которых вы были активны сегодня</p>
                         <p>2. Для баланса старайтесь отмечать 3+ сферы ежедневно</p>
-                        <p>3. Сохраняйте данные кнопкой "Сохранить день"</p>
+                        <p>3. Данные сохраняются автоматически при выборе сфер</p>
                         <p>4. В "Аналитике" отслеживайте прогресс за месяц</p>
                         <p>5. Получайте персонализированные советы</p>
                     </div>
@@ -599,7 +687,34 @@
                     </div>
                 </div>
             </div>
-        </main>
+        </div>
+    </div>
+
+    <!-- Контейнер для экспорта статистики (скрытый) -->
+    <div id="statsExportContainer" class="stats-export-container" style="display: none; background: #fffdfa;">
+        <div class="watermark">тг: maytrue</div>
+        <div class="progress-section" style="background: #fffdfa;">
+            <div class="progress-text" id="exportProgressText">Прогресс за месяц: 0%</div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="exportProgressFill"></div>
+            </div>
+        </div>
+        
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 24px 0;">
+            <div class="chart-container" style="background: #fffdfa;">
+                <div class="chart-title">Прогресс по сферам</div>
+                <canvas id="exportProgressChart"></canvas>
+            </div>
+            <div class="chart-container" style="background: #fffdfa;">
+                <div class="chart-title">Распределение</div>
+                <canvas id="exportDistributionChart"></canvas>
+            </div>
+        </div>
+        
+        <div class="chart-container" style="background: #fffdfa;">
+            <div class="chart-title">Динамика за месяц</div>
+            <canvas id="exportMonthlyChart"></canvas>
+        </div>
     </div>
 
     <div class="notification" id="notification">Данные сохранены!</div>
@@ -653,17 +768,34 @@
                 this.currentDate = new Date();
                 this.userData = this.loadUserData();
                 this.charts = {};
+                this.telegramWebApp = null;
                 
                 this.init();
             }
 
             init() {
+                this.initTelegramWebApp();
                 this.setupEventListeners();
                 this.renderCategories();
                 this.loadDayData();
                 this.updateMonthDisplay();
                 this.checkMonthlyReset();
                 this.restrictToCurrentMonth();
+            }
+
+            initTelegramWebApp() {
+                if (window.Telegram && window.Telegram.WebApp) {
+                    this.telegramWebApp = window.Telegram.WebApp;
+                    this.telegramWebApp.expand();
+                    this.telegramWebApp.enableClosingConfirmation();
+                }
+            }
+
+            getSeasonIcon(month) {
+                if (month >= 2 && month <= 4) return '🌱'; // Весна
+                if (month >= 5 && month <= 7) return '☀️'; // Лето
+                if (month >= 8 && month <= 10) return '🍂'; // Осень
+                return '❄️'; // Зима
             }
 
             loadUserData() {
@@ -739,17 +871,23 @@
                     }
                 });
 
-                document.getElementById('saveButton').addEventListener('click', () => {
-                    this.saveDayData();
+                document.getElementById('infoButton').addEventListener('click', () => {
+                    this.switchTab('info');
                 });
 
-                // Кнопки экспорта
                 document.getElementById('downloadStats').addEventListener('click', () => {
                     this.downloadStatistics();
                 });
 
                 document.getElementById('shareStats').addEventListener('click', () => {
                     this.shareStatistics();
+                });
+
+                // Автосохранение при изменении категорий
+                document.addEventListener('click', (e) => {
+                    if (e.target.closest('.category-item')) {
+                        setTimeout(() => this.autoSave(), 100);
+                    }
                 });
             }
 
@@ -763,7 +901,9 @@
                 });
                 
                 document.getElementById(tabName).classList.add('active');
-                document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
+                if (tabName !== 'info') {
+                    document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
+                }
 
                 if (tabName === 'analytics') {
                     this.loadAnalytics();
@@ -806,7 +946,8 @@
                     'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'
                 ];
                 const currentMonth = this.currentDate.getMonth();
-                document.getElementById('currentMonth').textContent = monthNames[currentMonth];
+                document.getElementById('monthName').textContent = monthNames[currentMonth];
+                document.getElementById('seasonIcon').textContent = this.getSeasonIcon(currentMonth);
             }
 
             renderCategories() {
@@ -831,6 +972,13 @@
 
                     container.appendChild(categoryElem);
                 });
+            }
+
+            autoSave() {
+                const completed = document.querySelectorAll('.category-item.completed').length;
+                if (completed > 0) {
+                    this.saveDayData();
+                }
             }
 
             loadDayData() {
@@ -974,14 +1122,8 @@
                 const stats = this.calculateStats(month);
 
                 const categoryColors = [
-                    '#FF6B6B', // Красный
-                    '#4ECDC4', // Бирюзовый
-                    '#FFD166', // Желтый
-                    '#06D6A0', // Зеленый
-                    '#118AB2', // Синий
-                    '#EF476F', // Розовый
-                    '#073B4C', // Темно-синий
-                    '#7209B7'  // Фиолетовый
+                    '#FF6B6B', '#4ECDC4', '#FFD166', '#06D6A0',
+                    '#118AB2', '#EF476F', '#073B4C', '#7209B7'
                 ];
 
                 this.charts.progress = new Chart(ctx, {
@@ -1131,11 +1273,123 @@
                 });
             }
 
+            async prepareExportCharts() {
+                const month = this.formatDate(this.currentDate).slice(0, 7);
+                const stats = this.calculateStats(month);
+                
+                // Обновляем прогресс для экспорта
+                const totalTrackedDays = Object.keys(this.userData.activities).length;
+                const daysInMonth = this.getDaysInMonth();
+                const monthlyProgress = daysInMonth > 0 ? Math.round((totalTrackedDays / daysInMonth) * 100) : 0;
+                
+                document.getElementById('exportProgressFill').style.width = `${monthlyProgress}%`;
+                document.getElementById('exportProgressText').textContent = `Прогресс за месяц: ${monthlyProgress}% (${totalTrackedDays}/${daysInMonth} дней)`;
+
+                // Создаем временные графики для экспорта
+                await this.renderExportCharts(month);
+            }
+
+            async renderExportCharts(month) {
+                const stats = this.calculateStats(month);
+                const dates = this.getDatesInMonth(month);
+                const dailyData = [];
+                const labels = [];
+
+                dates.forEach(date => {
+                    const dayData = this.userData.activities[date];
+                    if (dayData) {
+                        const completed = dayData.filter(activity => activity.completed).length;
+                        const percentage = Math.round((completed / this.categories.length) * 100);
+                        dailyData.push(percentage);
+                        labels.push(new Date(date).getDate());
+                    }
+                });
+
+                const categoryColors = [
+                    '#FF6B6B', '#4ECDC4', '#FFD166', '#06D6A0',
+                    '#118AB2', '#EF476F', '#073B4C', '#7209B7'
+                ];
+
+                // Прогресс по сферам
+                const progressCtx = document.getElementById('exportProgressChart').getContext('2d');
+                new Chart(progressCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: stats.map(stat => stat.category),
+                        datasets: [{
+                            data: stats.map(stat => stat.completion_rate),
+                            backgroundColor: categoryColors,
+                            borderColor: '#000000',
+                            borderWidth: 0,
+                            borderRadius: 6
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { display: false } },
+                        scales: {
+                            y: { beginAtZero: true, max: 100 }
+                        }
+                    }
+                });
+
+                // Распределение активности
+                const distCtx = document.getElementById('exportDistributionChart').getContext('2d');
+                new Chart(distCtx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: stats.map(stat => stat.category),
+                        datasets: [{
+                            data: stats.map(stat => stat.completed_days),
+                            backgroundColor: categoryColors,
+                            borderColor: '#fffdfa',
+                            borderWidth: 2
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { display: false } }
+                    }
+                });
+
+                // Динамика за месяц
+                const monthlyCtx = document.getElementById('exportMonthlyChart').getContext('2d');
+                new Chart(monthlyCtx, {
+                    type: 'line',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            data: dailyData,
+                            borderColor: '#553922',
+                            backgroundColor: 'rgba(85, 57, 34, 0.1)',
+                            borderWidth: 2,
+                            fill: true,
+                            tension: 0.4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { display: false } },
+                        scales: {
+                            y: { beginAtZero: true, max: 100 }
+                        }
+                    }
+                });
+            }
+
             async downloadStatistics() {
                 try {
                     this.showNotification('Создаем изображение...');
                     
-                    const element = document.getElementById('statsForExport');
+                    await this.prepareExportCharts();
+                    
+                    // Даем время на отрисовку графиков
+                    await new Promise(resolve => setTimeout(resolve, 1000));
+                    
+                    const element = document.getElementById('statsExportContainer');
                     const canvas = await html2canvas(element, {
                         backgroundColor: '#fffdfa',
                         scale: 2,
@@ -1144,11 +1398,12 @@
                     });
 
                     const link = document.createElement('a');
-                    link.download = `статистика-${this.formatDate(this.currentDate)}.png`;
+                    link.download = `статистика-баланса-${this.formatDate(this.currentDate)}.png`;
                     link.href = canvas.toDataURL('image/png');
                     link.click();
                     
                     this.showNotification('Изображение сохранено!');
+                    
                 } catch (error) {
                     console.error('Ошибка при создании изображения:', error);
                     this.showNotification('Ошибка при сохранении');
@@ -1159,7 +1414,10 @@
                 try {
                     this.showNotification('Создаем изображение...');
                     
-                    const element = document.getElementById('statsForExport');
+                    await this.prepareExportCharts();
+                    await new Promise(resolve => setTimeout(resolve, 1000));
+                    
+                    const element = document.getElementById('statsExportContainer');
                     const canvas = await html2canvas(element, {
                         backgroundColor: '#fffdfa',
                         scale: 2,
@@ -1167,97 +1425,74 @@
                         useCORS: true
                     });
 
-                    canvas.toBlob(async (blob) => {
-                        const file = new File([blob], `статистика-${this.formatDate(this.currentDate)}.png`, {
-                            type: 'image/png'
-                        });
-
-                        // Проверяем поддержку Web Share API
-                        if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
-                            try {
-                                await navigator.share({
-                                    files: [file],
-                                    title: 'Моя статистика баланса',
-                                    text: 'Посмотрите мою статистику баланса жизни!'
-                                });
-                                this.showNotification('Статистика отправлена!');
-                            } catch (error) {
-                                console.error('Ошибка при отправке:', error);
-                                this.fallbackShare(canvas);
-                            }
-                        } else {
-                            this.fallbackShare(canvas);
-                        }
+                    const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
+                    const file = new File([blob], `статистика-баланса-${this.formatDate(this.currentDate)}.png`, {
+                        type: 'image/png'
                     });
+
+                    if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+                        await navigator.share({
+                            files: [file],
+                            title: 'Моя статистика баланса',
+                            text: 'Посмотрите мою статистику баланса жизни! 📊'
+                        });
+                        this.showNotification('Статистика отправлена!');
+                    } else {
+                        // Fallback
+                        const dataUrl = canvas.toDataURL('image/png');
+                        const newWindow = window.open();
+                        newWindow.document.write(`
+                            <!DOCTYPE html>
+                            <html>
+                            <head>
+                                <title>Поделиться статистикой</title>
+                                <style>
+                                    body { 
+                                        font-family: Arial, sans-serif; 
+                                        padding: 20px; 
+                                        text-align: center; 
+                                        background: #f5f5f5;
+                                    }
+                                    .container { 
+                                        max-width: 500px; 
+                                        margin: 0 auto; 
+                                        background: white;
+                                        padding: 20px;
+                                        border-radius: 10px;
+                                        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+                                    }
+                                    img { 
+                                        max-width: 100%; 
+                                        height: auto; 
+                                        border: 1px solid #ddd;
+                                        border-radius: 5px;
+                                    }
+                                    .instructions {
+                                        margin: 20px 0;
+                                        color: #666;
+                                        font-size: 14px;
+                                    }
+                                </style>
+                            </head>
+                            <body>
+                                <div class="container">
+                                    <h2>Ваша статистика готова!</h2>
+                                    <div class="instructions">
+                                        <p>Сохраните изображение и отправьте его в Telegram:</p>
+                                        <p>1. Нажмите и удерживайте изображение</p>
+                                        <p>2. Выберите "Сохранить изображение"</p>
+                                        <p>3. Отправьте в чат Telegram</p>
+                                    </div>
+                                    <img src="${dataUrl}" alt="Статистика баланса">
+                                </div>
+                            </body>
+                            </html>
+                        `);
+                    }
                 } catch (error) {
                     console.error('Ошибка при создании изображения:', error);
                     this.showNotification('Ошибка при отправке');
                 }
-            }
-
-            fallbackShare(canvas) {
-                // Fallback для браузеров без поддержки Web Share API
-                const dataUrl = canvas.toDataURL('image/png');
-                const newWindow = window.open();
-                newWindow.document.write(`
-                    <!DOCTYPE html>
-                    <html>
-                    <head>
-                        <title>Поделиться статистикой</title>
-                        <style>
-                            body { 
-                                font-family: Arial, sans-serif; 
-                                padding: 20px; 
-                                text-align: center; 
-                                background: #f5f5f5;
-                            }
-                            .container { 
-                                max-width: 500px; 
-                                margin: 0 auto; 
-                                background: white;
-                                padding: 20px;
-                                border-radius: 10px;
-                                box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-                            }
-                            img { 
-                                max-width: 100%; 
-                                height: auto; 
-                                border: 1px solid #ddd;
-                                border-radius: 5px;
-                            }
-                            .instructions {
-                                margin: 20px 0;
-                                color: #666;
-                                font-size: 14px;
-                            }
-                            .button {
-                                background: #0088cc;
-                                color: white;
-                                padding: 10px 20px;
-                                border: none;
-                                border-radius: 5px;
-                                cursor: pointer;
-                                margin: 5px;
-                            }
-                        </style>
-                    </head>
-                    <body>
-                        <div class="container">
-                            <h2>Ваша статистика готова!</h2>
-                            <div class="instructions">
-                                <p>Сохраните изображение и отправьте его в Telegram:</p>
-                                <p>1. Нажмите и удерживайте изображение</p>
-                                <p>2. Выберите "Сохранить изображение"</p>
-                                <p>3. Отправьте в чат Telegram</p>
-                            </div>
-                            <img src="${dataUrl}" alt="Статистика баланса">
-                            <div style="margin-top: 20px;">
-                                <button class="button" onclick="window.close()">Закрыть</button>
-                            </div>
-                        </div>
-                    </body>
-                    </html>
-                `);
             }
 
             getDatesInMonth(month) {
