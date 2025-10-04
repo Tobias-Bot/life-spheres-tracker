@@ -12,9 +12,9 @@
             --primary-light: #fffdfa;
             --primary-dark: #0a291e;
             --accent: #553922;
-            --bg-light: rgba(255, 253, 250, 0.4);
-            --bg-dark: rgba(10, 41, 30, 0.4);
-            --bg-accent: rgba(85, 57, 34, 0.2);
+            --bg-light: rgba(255, 253, 250, 0.6);
+            --bg-dark: rgba(10, 41, 30, 0.3);
+            --bg-accent: rgba(85, 57, 34, 0.1);
         }
 
         * {
@@ -85,13 +85,13 @@
         }
 
         .tabs {
-            background: rgba(255, 253, 250, 0.95);
+            background: var(--primary-light);
             display: flex;
             padding: 12px 20px;
             border-radius: 16px;
             margin-bottom: 20px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-            border: 1px solid rgba(255, 253, 250, 0.5);
+            box-shadow: 0 2px 8px rgba(10, 41, 30, 0.1);
+            border: 1px solid rgba(10, 41, 30, 0.1);
             justify-content: center;
         }
 
@@ -121,7 +121,7 @@
         .tab-button.active {
             background: var(--primary-dark);
             color: var(--primary-light);
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 2px 8px rgba(10, 41, 30, 0.2);
         }
 
         .main-content {
@@ -156,11 +156,11 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 20px;
-            background: rgba(255, 253, 250, 0.8);
+            background: var(--primary-light);
             padding: 20px;
             border-radius: 16px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            border: 1px solid rgba(255, 253, 250, 0.5);
+            box-shadow: 0 4px 12px rgba(10, 41, 30, 0.1);
+            border: 1px solid rgba(10, 41, 30, 0.1);
         }
 
         .date-selector button {
@@ -184,8 +184,8 @@
         }
 
         .date-selector button:disabled {
-            background: #E5E7EB;
-            color: #9CA3AF;
+            background: rgba(10, 41, 30, 0.2);
+            color: rgba(10, 41, 30, 0.4);
             cursor: not-allowed;
         }
 
@@ -213,18 +213,18 @@
         }
 
         .category-item {
-            background: rgba(255, 253, 250, 0.9);
+            background: var(--primary-light);
             padding: 20px;
             border-radius: 16px;
             cursor: pointer;
             transition: all 0.3s ease;
             border: 2px solid transparent;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            box-shadow: 0 2px 8px rgba(10, 41, 30, 0.08);
         }
 
         .category-item:hover {
             transform: translateY(-2px);
-            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+            box-shadow: 0 4px 16px rgba(10, 41, 30, 0.12);
             border-color: var(--accent);
         }
 
@@ -234,7 +234,7 @@
 
         .category-item.completed {
             border-color: var(--accent);
-            background: rgba(85, 57, 34, 0.1);
+            background: rgba(85, 57, 34, 0.05);
         }
 
         .category-header {
@@ -269,7 +269,7 @@
 
         .category-item.completed .category-checkbox::after {
             content: '✓';
-            color: white;
+            color: var(--primary-light);
             font-weight: bold;
             font-size: 14px;
         }
@@ -281,13 +281,13 @@
         }
 
         .progress-section {
-            background: rgba(255, 253, 250, 0.9);
+            background: var(--primary-light);
             padding: 24px;
             border-radius: 16px;
             margin-bottom: 20px;
             text-align: center;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            border: 1px solid rgba(255, 253, 250, 0.5);
+            box-shadow: 0 4px 12px rgba(10, 41, 30, 0.1);
+            border: 1px solid rgba(10, 41, 30, 0.1);
         }
 
         .progress-text {
@@ -300,7 +300,7 @@
         .progress-bar {
             width: 100%;
             height: 12px;
-            background-color: rgba(0, 0, 0, 0.1);
+            background-color: rgba(10, 41, 30, 0.1);
             border-radius: 6px;
             overflow: hidden;
             margin: 16px 0;
@@ -337,13 +337,13 @@
             transition: all 0.3s ease;
             font-weight: 600;
             font-size: 16px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 2px 8px rgba(10, 41, 30, 0.15);
         }
 
         .export-button:hover {
             background: var(--accent);
             transform: translateY(-2px);
-            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 4px 16px rgba(10, 41, 30, 0.2);
         }
 
         .export-button:active {
@@ -363,11 +363,11 @@
         }
 
         .chart-container {
-            background: rgba(255, 253, 250, 0.9);
+            background: var(--primary-light);
             padding: 20px;
             border-radius: 16px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            border: 1px solid rgba(255, 253, 250, 0.5);
+            box-shadow: 0 4px 12px rgba(10, 41, 30, 0.1);
+            border: 1px solid rgba(10, 41, 30, 0.1);
         }
 
         .chart-title {
@@ -393,7 +393,7 @@
             background: rgba(255, 253, 250, 0.7);
             border-radius: 8px;
             font-size: 14px;
-            border: 1px solid rgba(0, 0, 0, 0.05);
+            border: 1px solid rgba(10, 41, 30, 0.05);
         }
 
         .category-percentage-name {
@@ -407,17 +407,17 @@
         }
 
         .recommendations-list {
-            background: rgba(255, 253, 250, 0.9);
+            background: var(--primary-light);
             border-radius: 16px;
             padding: 24px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            border: 1px solid rgba(255, 253, 250, 0.5);
+            box-shadow: 0 4px 12px rgba(10, 41, 30, 0.1);
+            border: 1px solid rgba(10, 41, 30, 0.1);
         }
 
         .recommendation-item {
             padding: 16px;
             margin-bottom: 12px;
-            background: rgba(255, 253, 250, 0.9);
+            background: var(--primary-light);
             border-left: 4px solid var(--accent);
             border-radius: 8px;
         }
@@ -448,11 +448,11 @@
         }
 
         .info-content {
-            background: rgba(255, 253, 250, 0.9);
+            background: var(--primary-light);
             border-radius: 16px;
             padding: 24px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            border: 1px solid rgba(255, 253, 250, 0.5);
+            box-shadow: 0 4px 12px rgba(10, 41, 30, 0.1);
+            border: 1px solid rgba(10, 41, 30, 0.1);
             text-align: center;
         }
 
@@ -494,7 +494,7 @@
             text-align: center;
             margin-top: 24px;
             padding-top: 20px;
-            border-top: 1px solid rgba(0, 0, 0, 0.1);
+            border-top: 1px solid rgba(10, 41, 30, 0.1);
         }
 
         .made-with-love {
@@ -522,7 +522,7 @@
             color: var(--primary-light);
             padding: 16px 24px;
             border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 4px 20px rgba(10, 41, 30, 0.2);
             transition: transform 0.3s ease;
             z-index: 1000;
             font-size: 15px;
@@ -535,37 +535,36 @@
             transform: translateX(-50%) translateY(150px);
         }
 
-        .stats-export-container {
-            background: #fffdfa;
+        .export-container {
+            background: var(--primary-light);
             padding: 40px;
-            border-radius: 16px;
-            position: relative;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 8px 32px rgba(10, 41, 30, 0.1);
             max-width: 500px;
             margin: 0 auto;
-            text-align: center;
+        }
+
+        .export-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary-dark);
+            margin-bottom: 30px;
         }
 
         .export-watermark {
-            text-align: center;
-            margin-top: 20px;
-            color: rgba(0, 0, 0, 0.5);
+            margin-top: 25px;
+            color: var(--accent);
             font-size: 14px;
             font-style: italic;
-        }
-
-        .export-chart-title {
-            font-size: 20px;
-            font-weight: 600;
-            margin-bottom: 20px;
-            color: #0a291e;
-            text-align: center;
+            opacity: 0.8;
         }
 
         /* Поддержка темной темы */
         @media (prefers-color-scheme: dark) {
             body {
-                background: linear-gradient(135deg, rgba(26, 26, 26, 0.4) 0%, rgba(10, 41, 30, 0.4) 100%);
-                color: #ffffff;
+                background: linear-gradient(135deg, rgba(255, 253, 250, 0.1) 0%, rgba(10, 41, 30, 0.3) 100%);
+                color: var(--primary-light);
             }
             
             .date-selector,
@@ -574,29 +573,14 @@
             .chart-container,
             .recommendations-list,
             .info-content,
-            .tabs {
-                background: rgba(40, 40, 40, 0.9);
-                border-color: rgba(255, 255, 255, 0.1);
-            }
-            
-            .category-percentage {
-                background: rgba(50, 50, 50, 0.8);
-            }
-            
-            .progress-bar {
-                background-color: rgba(255, 255, 255, 0.1);
+            .tabs,
+            .export-container {
+                background: rgba(255, 253, 250, 0.95);
             }
             
             .category-description,
-            .category-name,
-            .chart-title,
-            .progress-text,
             .info-section p {
-                color: rgba(255, 255, 255, 0.9);
-            }
-            
-            .category-percentage-name {
-                color: rgba(255, 255, 255, 0.9);
+                color: var(--primary-dark);
             }
         }
     </style>
@@ -667,8 +651,8 @@
 
             <div id="info" class="tab-content">
                 <div class="info-content">
-                    <div class="logo-placeholder">
-                        Логотип
+                    <div class="logo-container">
+                        <img src="logo.png" alt="Логотип" class="app-logo">
                     </div>
                     
                     <div class="info-section">
@@ -710,9 +694,9 @@
     </div>
 
     <!-- Контейнер для экспорта статистики (скрытый) -->
-    <div id="statsExportContainer" class="stats-export-container" style="display: none;">
-        <div class="export-chart-title">Мой баланс жизни</div>
-        <canvas id="exportDistributionChart" width="400" height="400"></canvas>
+    <div id="exportContainer" class="export-container" style="display: none;">
+        <div class="export-title">Мой баланс жизни</div>
+        <canvas id="exportChart" width="400" height="300"></canvas>
         <div class="export-watermark">тг: maytrue</div>
     </div>
 
@@ -1209,7 +1193,7 @@
                 });
             }
 
-            async prepareExportChart() {
+            async createExportChart() {
                 const month = this.formatDate(this.currentDate).slice(0, 7);
                 const stats = this.calculateStats(month);
 
@@ -1218,8 +1202,7 @@
                     '#118AB2', '#EF476F', '#073B4C', '#7209B7'
                 ];
 
-                // Создаем временный график для экспорта
-                const ctx = document.getElementById('exportDistributionChart').getContext('2d');
+                const ctx = document.getElementById('exportChart').getContext('2d');
                 
                 // Очищаем предыдущий график
                 const existingChart = Chart.getChart(ctx);
@@ -1227,7 +1210,7 @@
                     existingChart.destroy();
                 }
 
-                new Chart(ctx, {
+                return new Chart(ctx, {
                     type: 'doughnut',
                     data: {
                         labels: stats.map(stat => stat.category),
@@ -1260,12 +1243,13 @@
                 try {
                     this.showNotification('Создаем изображение...');
                     
-                    await this.prepareExportChart();
+                    // Создаем график для экспорта
+                    await this.createExportChart();
                     
                     // Даем время на отрисовку графика
                     await new Promise(resolve => setTimeout(resolve, 500));
                     
-                    const element = document.getElementById('statsExportContainer');
+                    const element = document.getElementById('exportContainer');
                     const canvas = await html2canvas(element, {
                         backgroundColor: '#fffdfa',
                         scale: 2,
@@ -1290,10 +1274,13 @@
                 try {
                     this.showNotification('Создаем изображение...');
                     
-                    await this.prepareExportChart();
+                    // Создаем график для экспорта
+                    await this.createExportChart();
+                    
+                    // Даем время на отрисовку графика
                     await new Promise(resolve => setTimeout(resolve, 500));
                     
-                    const element = document.getElementById('statsExportContainer');
+                    const element = document.getElementById('exportContainer');
                     const canvas = await html2canvas(element, {
                         backgroundColor: '#fffdfa',
                         scale: 2,
