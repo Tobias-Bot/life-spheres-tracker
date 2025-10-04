@@ -25,12 +25,12 @@
         }
 
         body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    background: #ffffff;
-    color: var(--primary-dark);
-    min-height: 100vh;
-    line-height: 1.4;
-}
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #ffffff;
+            color: var(--primary-dark);
+            min-height: 100vh;
+            line-height: 1.4;
+        }
 
         .container {
             max-width: 1200px;
@@ -456,6 +456,18 @@
             text-align: center;
         }
 
+        .logo-container {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .app-logo {
+            width: 120px;
+            height: 120px;
+            border-radius: 20px;
+            object-fit: contain;
+        }
+
         .logo-placeholder {
             width: 120px;
             height: 120px;
@@ -468,18 +480,6 @@
             font-size: 14px;
             color: var(--accent);
             border: 2px dashed var(--accent);
-        }
-
-        .logo-container {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-
-        .app-logo {
-            width: 100px;
-            height: 100px;
-            border-radius: 20px;
-            object-fit: contain;
         }
 
         .info-section {
@@ -572,11 +572,18 @@
             opacity: 0.8;
         }
 
+        .export-logo {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 15px;
+            object-fit: contain;
+        }
+
         /* Поддержка темной темы */
         @media (prefers-color-scheme: dark) {
             body {
-                background: linear-gradient(135deg, rgba(255, 253, 250, 0.1) 0%, rgba(10, 41, 30, 0.3) 100%);
-                color: var(--primary-light);
+                background: #ffffff;
+                color: var(--primary-dark);
             }
             
             .date-selector,
@@ -664,7 +671,7 @@
             <div id="info" class="tab-content">
                 <div class="info-content">
                     <div class="logo-container">
-                        <img src="logo.png" alt="Логотип" class="app-logo">
+                        <img src="logo.png" alt="Логотип" class="app-logo" onerror="this.style.display='none'; this.parentNode.innerHTML='<div class=\'logo-placeholder\'>Логотип</div>';">
                     </div>
                     
                     <div class="info-section">
@@ -706,15 +713,33 @@
     </div>
 
     <!-- Контейнер для экспорта статистики (скрытый) -->
-    <div id="exportContainer" class="export-container" style="position: fixed; left: -9999px; top: -9999px;">
-    <div class="export-title">Мой баланс жизни</div>
-    <canvas id="exportChart" width="400" height="300"></canvas>
-    <div class="export-watermark">тг: maytrue</div>
-</div>
+    <div id="exportContainer" class="export-container" style="display: none;">
+        <img src="logo.png" alt="Логотип" class="export-logo" onerror="this.style.display='none'">
+        <div class="export-title">Мой баланс жизни</div>
+        <canvas id="exportChart" width="400" height="300"></canvas>
+        <div class="export-watermark">тг: maytrue</div>
+    </div>
 
     <div class="notification" id="notification">Данные сохранены!</div>
 
     <script>
+        // Функция для проверки, работает ли приложение в Telegram
+        function isTelegramWebApp() {
+            return window.Telegram && window.Telegram.WebApp;
+        }
+
+        // Заглушка для Telegram Web App API если приложение запущено вне Telegram
+        if (!isTelegramWebApp()) {
+            window.Telegram = {
+                WebApp: {
+                    expand: function() { console.log('Telegram Web App: expand()'); },
+                    enableClosingConfirmation: function() { console.log('Telegram Web App: enableClosingConfirmation()'); },
+                    ready: function() { console.log('Telegram Web App: ready()'); },
+                    close: function() { console.log('Telegram Web App: close()'); }
+                }
+            };
+        }
+
         class WellnessTracker {
             constructor() {
                 this.categories = [
@@ -779,10 +804,13 @@
             }
 
             initTelegramWebApp() {
-                if (window.Telegram && window.Telegram.WebApp) {
+                if (isTelegramWebApp()) {
                     this.telegramWebApp = window.Telegram.WebApp;
                     this.telegramWebApp.expand();
                     this.telegramWebApp.enableClosingConfirmation();
+                    this.telegramWebApp.ready();
+                } else {
+                    console.log('Приложение запущено вне Telegram');
                 }
             }
 
@@ -1252,99 +1280,115 @@
             }
 
             async downloadStatistics() {
-    try {
-        this.showNotification('Создаем изображение...');
-        
-        // Показываем контейнер для экспорта
-        const exportContainer = document.getElementById('exportContainer');
-        exportContainer.style.display = 'block';
-        
-        // Создаем график для экспорта
-        await this.createExportChart();
-        
-        // Даем больше времени на отрисовку
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        
-        const canvas = await html2canvas(exportContainer, {
-            backgroundColor: '#ffffff',
-            scale: 2,
-            logging: false,
-            useCORS: true
-        });
+                try {
+                    this.showNotification('Создаем изображение...');
+                    
+                    // Показываем контейнер для экспорта
+                    const exportContainer = document.getElementById('exportContainer');
+                    exportContainer.style.display = 'block';
+                    exportContainer.style.position = 'fixed';
+                    exportContainer.style.left = '0';
+                    exportContainer.style.top = '0';
+                    exportContainer.style.zIndex = '9999';
+                    
+                    // Создаем график для экспорта
+                    await this.createExportChart();
+                    
+                    // Даем больше времени на отрисовку
+                    await new Promise(resolve => setTimeout(resolve, 1000));
+                    
+                    const canvas = await html2canvas(exportContainer, {
+                        backgroundColor: '#ffffff',
+                        scale: 2,
+                        logging: false,
+                        useCORS: true
+                    });
 
-        // Скрываем контейнер обратно
-        exportContainer.style.display = 'none';
+                    // Скрываем контейнер обратно
+                    exportContainer.style.display = 'none';
+                    exportContainer.style.position = '';
+                    exportContainer.style.left = '';
+                    exportContainer.style.top = '';
+                    exportContainer.style.zIndex = '';
 
-        const link = document.createElement('a');
-        link.download = `баланс-жизни-${this.formatDate(this.currentDate)}.png`;
-        link.href = canvas.toDataURL('image/png');
-        link.click();
-        
-        this.showNotification('Изображение сохранено!');
-        
-    } catch (error) {
-        console.error('Ошибка при создании изображения:', error);
-        this.showNotification('Ошибка при сохранении');
-    }
-}
+                    const link = document.createElement('a');
+                    link.download = `баланс-жизни-${this.formatDate(this.currentDate)}.png`;
+                    link.href = canvas.toDataURL('image/png');
+                    link.click();
+                    
+                    this.showNotification('Изображение сохранено!');
+                    
+                } catch (error) {
+                    console.error('Ошибка при создании изображения:', error);
+                    this.showNotification('Ошибка при сохранении');
+                }
+            }
 
             async shareStatistics() {
-    try {
-        this.showNotification('Создаем изображение...');
-        
-        // Показываем контейнер для экспорта
-        const exportContainer = document.getElementById('exportContainer');
-        exportContainer.style.display = 'block';
-        
-        // Создаем график для экспорта
-        await this.createExportChart();
-        
-        // Даем больше времени на отрисовку
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        
-        const canvas = await html2canvas(exportContainer, {
-            backgroundColor: '#ffffff',
-            scale: 2,
-            logging: false,
-            useCORS: true
-        });
+                try {
+                    this.showNotification('Создаем изображение...');
+                    
+                    // Показываем контейнер для экспорта
+                    const exportContainer = document.getElementById('exportContainer');
+                    exportContainer.style.display = 'block';
+                    exportContainer.style.position = 'fixed';
+                    exportContainer.style.left = '0';
+                    exportContainer.style.top = '0';
+                    exportContainer.style.zIndex = '9999';
+                    
+                    // Создаем график для экспорта
+                    await this.createExportChart();
+                    
+                    // Даем больше времени на отрисовку
+                    await new Promise(resolve => setTimeout(resolve, 1000));
+                    
+                    const canvas = await html2canvas(exportContainer, {
+                        backgroundColor: '#ffffff',
+                        scale: 2,
+                        logging: false,
+                        useCORS: true
+                    });
 
-        // Скрываем контейнер обратно
-        exportContainer.style.display = 'none';
+                    // Скрываем контейнер обратно
+                    exportContainer.style.display = 'none';
+                    exportContainer.style.position = '';
+                    exportContainer.style.left = '';
+                    exportContainer.style.top = '';
+                    exportContainer.style.zIndex = '';
 
-        const dataUrl = canvas.toDataURL('image/png');
-        
-        // Проверяем, доступен ли Web Share API
-        if (navigator.share) {
-            // Создаем Blob из Data URL
-            const response = await fetch(dataUrl);
-            const blob = await response.blob();
-            const file = new File([blob], `баланс-жизни-${this.formatDate(this.currentDate)}.png`, {
-                type: 'image/png'
-            });
-            
-            if (navigator.canShare && navigator.canShare({ files: [file] })) {
-                await navigator.share({
-                    files: [file],
-                    title: 'Мой баланс жизни',
-                    text: 'Посмотрите мой баланс жизни! 📊'
-                });
-                this.showNotification('Статистика отправлена!');
-            } else {
-                // Fallback для браузеров, которые не поддерживают обмен файлами
-                this.showShareFallback(dataUrl);
+                    const dataUrl = canvas.toDataURL('image/png');
+                    
+                    // Проверяем, доступен ли Web Share API
+                    if (navigator.share) {
+                        // Создаем Blob из Data URL
+                        const response = await fetch(dataUrl);
+                        const blob = await response.blob();
+                        const file = new File([blob], `баланс-жизни-${this.formatDate(this.currentDate)}.png`, {
+                            type: 'image/png'
+                        });
+                        
+                        if (navigator.canShare && navigator.canShare({ files: [file] })) {
+                            await navigator.share({
+                                files: [file],
+                                title: 'Мой баланс жизни',
+                                text: 'Посмотрите мой баланс жизни! 📊'
+                            });
+                            this.showNotification('Статистика отправлена!');
+                        } else {
+                            // Fallback для браузеров, которые не поддерживают обмен файлами
+                            this.showShareFallback(dataUrl);
+                        }
+                    } else {
+                        // Fallback для браузеров без поддержки Web Share API
+                        this.showShareFallback(dataUrl);
+                    }
+                } catch (error) {
+                    console.error('Ошибка при создании изображения:', error);
+                    if (error.name !== 'AbortError') {
+                        this.showNotification('Ошибка при отправке');
+                    }
+                }
             }
-        } else {
-            // Fallback для браузеров без поддержки Web Share API
-            this.showShareFallback(dataUrl);
-        }
-    } catch (error) {
-        console.error('Ошибка при создании изображения:', error);
-        if (error.name !== 'AbortError') {
-            this.showNotification('Ошибка при отправке');
-        }
-    }
-}
 
             showShareFallback(dataUrl) {
                 const newWindow = window.open();
@@ -1541,5 +1585,3 @@
     </script>
 </body>
 </html>
-
-
