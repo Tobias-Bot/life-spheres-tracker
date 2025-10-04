@@ -462,22 +462,22 @@
         }
 
         .app-logo {
-            width: 120px;
-            height: 120px;
-            border-radius: 20px;
+            width: 84px; /* Уменьшено на 30% от 120px */
+            height: 84px; /* Уменьшено на 30% от 120px */
+            border-radius: 16px;
             object-fit: contain;
         }
 
         .logo-placeholder {
-            width: 120px;
-            height: 120px;
+            width: 84px; /* Уменьшено на 30% от 120px */
+            height: 84px; /* Уменьшено на 30% от 120px */
             margin: 0 auto 20px;
             background: rgba(85, 57, 34, 0.1);
-            border-radius: 20px;
+            border-radius: 16px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 14px;
+            font-size: 12px;
             color: var(--accent);
             border: 2px dashed var(--accent);
         }
@@ -555,6 +555,9 @@
             box-shadow: 0 8px 32px rgba(10, 41, 30, 0.1);
             max-width: 500px;
             margin: 0 auto;
+            position: fixed;
+            left: -9999px;
+            top: -9999px;
         }
 
         .export-title {
@@ -579,6 +582,48 @@
             object-fit: contain;
         }
 
+        .progress-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.9);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .progress-overlay.active {
+            display: flex;
+        }
+
+        .progress-info {
+            font-size: 18px;
+            color: var(--primary-dark);
+            font-weight: 600;
+        }
+
+        .progress-bar-overlay {
+            width: 80%;
+            max-width: 300px;
+            height: 8px;
+            background: rgba(10, 41, 30, 0.1);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill-overlay {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent), var(--primary-dark));
+            border-radius: 4px;
+            transition: width 0.3s ease;
+            width: 0%;
+        }
+
         /* Поддержка темной темы */
         @media (prefers-color-scheme: dark) {
             body {
@@ -600,6 +645,10 @@
             .category-description,
             .info-section p {
                 color: var(--primary-dark);
+            }
+
+            .progress-overlay {
+                background: rgba(255, 255, 255, 0.95);
             }
         }
     </style>
@@ -643,7 +692,6 @@
                 </div>
 
                 <div class="export-buttons">
-                    <button class="export-button" id="downloadStats">📥 Скачать статистику</button>
                     <button class="export-button" id="shareStats">📤 Поделиться в Telegram</button>
                 </div>
 
@@ -700,7 +748,7 @@
                         <p>• Трекер работает только в текущем месяце</p>
                         <p>• Каждое 1-е число месяца статистика автоматически обнуляется</p>
                         <p>• Это помогает сосредоточиться на текущих целях</p>
-                        <p>• Вы можете скачать статистику или поделиться ею в Telegram</p>
+                        <p>• Вы можете поделиться статистикой в Telegram</p>
                     </div>
 
                     <div class="developer">
@@ -713,11 +761,19 @@
     </div>
 
     <!-- Контейнер для экспорта статистики (скрытый) -->
-    <div id="exportContainer" class="export-container" style="display: none;">
+    <div id="exportContainer" class="export-container">
         <img src="logo.png" alt="Логотип" class="export-logo" onerror="this.style.display='none'">
         <div class="export-title">Мой баланс жизни</div>
         <canvas id="exportChart" width="400" height="300"></canvas>
         <div class="export-watermark">тг: maytrue</div>
+    </div>
+
+    <!-- Оверлей прогресса -->
+    <div class="progress-overlay" id="progressOverlay">
+        <div class="progress-info" id="progressInfo">Создаем изображение...</div>
+        <div class="progress-bar-overlay">
+            <div class="progress-fill-overlay" id="progressFillOverlay"></div>
+        </div>
     </div>
 
     <div class="notification" id="notification">Данные сохранены!</div>
@@ -896,10 +952,6 @@
 
                 document.getElementById('infoButton').addEventListener('click', () => {
                     this.switchTab('info');
-                });
-
-                document.getElementById('downloadStats').addEventListener('click', () => {
-                    this.downloadStatistics();
                 });
 
                 document.getElementById('shareStats').addEventListener('click', () => {
@@ -1279,83 +1331,28 @@
                 });
             }
 
-            async downloadStatistics() {
-                try {
-                    this.showNotification('Создаем изображение...');
-                    
-                    // Показываем контейнер для экспорта
-                    const exportContainer = document.getElementById('exportContainer');
-                    exportContainer.style.display = 'block';
-                    exportContainer.style.position = 'fixed';
-                    exportContainer.style.left = '0';
-                    exportContainer.style.top = '0';
-                    exportContainer.style.zIndex = '9999';
-                    
-                    // Создаем график для экспорта
-                    await this.createExportChart();
-                    
-                    // Даем больше времени на отрисовку
-                    await new Promise(resolve => setTimeout(resolve, 1000));
-                    
-                    const canvas = await html2canvas(exportContainer, {
-                        backgroundColor: '#ffffff',
-                        scale: 2,
-                        logging: false,
-                        useCORS: true
-                    });
-
-                    // Скрываем контейнер обратно
-                    exportContainer.style.display = 'none';
-                    exportContainer.style.position = '';
-                    exportContainer.style.left = '';
-                    exportContainer.style.top = '';
-                    exportContainer.style.zIndex = '';
-
-                    const link = document.createElement('a');
-                    link.download = `баланс-жизни-${this.formatDate(this.currentDate)}.png`;
-                    link.href = canvas.toDataURL('image/png');
-                    link.click();
-                    
-                    this.showNotification('Изображение сохранено!');
-                    
-                } catch (error) {
-                    console.error('Ошибка при создании изображения:', error);
-                    this.showNotification('Ошибка при сохранении');
-                }
-            }
-
             async shareStatistics() {
                 try {
-                    this.showNotification('Создаем изображение...');
-                    
-                    // Показываем контейнер для экспорта
-                    const exportContainer = document.getElementById('exportContainer');
-                    exportContainer.style.display = 'block';
-                    exportContainer.style.position = 'fixed';
-                    exportContainer.style.left = '0';
-                    exportContainer.style.top = '0';
-                    exportContainer.style.zIndex = '9999';
+                    // Показываем прогресс бар
+                    this.showProgress('Создаем изображение...', 0);
                     
                     // Создаем график для экспорта
                     await this.createExportChart();
+                    this.updateProgress('Подготавливаем данные...', 30);
                     
-                    // Даем больше времени на отрисовку
-                    await new Promise(resolve => setTimeout(resolve, 1000));
+                    await new Promise(resolve => setTimeout(resolve, 500));
                     
-                    const canvas = await html2canvas(exportContainer, {
+                    this.updateProgress('Создаем изображение...', 60);
+                    
+                    const canvas = await html2canvas(document.getElementById('exportContainer'), {
                         backgroundColor: '#ffffff',
                         scale: 2,
                         logging: false,
                         useCORS: true
                     });
 
-                    // Скрываем контейнер обратно
-                    exportContainer.style.display = 'none';
-                    exportContainer.style.position = '';
-                    exportContainer.style.left = '';
-                    exportContainer.style.top = '';
-                    exportContainer.style.zIndex = '';
-
+                    this.updateProgress('Завершаем...', 90);
+                    
                     const dataUrl = canvas.toDataURL('image/png');
                     
                     // Проверяем, доступен ли Web Share API
@@ -1373,21 +1370,48 @@
                                 title: 'Мой баланс жизни',
                                 text: 'Посмотрите мой баланс жизни! 📊'
                             });
+                            this.hideProgress();
                             this.showNotification('Статистика отправлена!');
                         } else {
                             // Fallback для браузеров, которые не поддерживают обмен файлами
+                            this.hideProgress();
                             this.showShareFallback(dataUrl);
                         }
                     } else {
                         // Fallback для браузеров без поддержки Web Share API
+                        this.hideProgress();
                         this.showShareFallback(dataUrl);
                     }
                 } catch (error) {
                     console.error('Ошибка при создании изображения:', error);
+                    this.hideProgress();
                     if (error.name !== 'AbortError') {
                         this.showNotification('Ошибка при отправке');
                     }
                 }
+            }
+
+            showProgress(text, percent) {
+                const overlay = document.getElementById('progressOverlay');
+                const progressInfo = document.getElementById('progressInfo');
+                const progressFill = document.getElementById('progressFillOverlay');
+                
+                progressInfo.textContent = text;
+                progressFill.style.width = percent + '%';
+                overlay.classList.add('active');
+            }
+
+            updateProgress(text, percent) {
+                const progressInfo = document.getElementById('progressInfo');
+                const progressFill = document.getElementById('progressFillOverlay');
+                
+                progressInfo.textContent = text;
+                progressFill.style.width = percent + '%';
+            }
+
+            hideProgress() {
+                const overlay = document.getElementById('progressOverlay');
+                overlay.classList.remove('active');
             }
 
             showShareFallback(dataUrl) {
