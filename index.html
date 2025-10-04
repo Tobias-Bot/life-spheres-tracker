@@ -25,12 +25,12 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, var(--bg-light) 0%, var(--bg-dark) 100%);
-            color: var(--primary-dark);
-            min-height: 100vh;
-            line-height: 1.4;
-        }
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: #ffffff;
+    color: var(--primary-dark);
+    min-height: 100vh;
+    line-height: 1.4;
+}
 
         .container {
             max-width: 1200px;
@@ -706,11 +706,11 @@
     </div>
 
     <!-- Контейнер для экспорта статистики (скрытый) -->
-    <div id="exportContainer" class="export-container" style="display: none;">
-        <div class="export-title">Мой баланс жизни</div>
-        <canvas id="exportChart" width="400" height="300"></canvas>
-        <div class="export-watermark">тг: maytrue</div>
-    </div>
+    <div id="exportContainer" class="export-container" style="position: fixed; left: -9999px; top: -9999px;">
+    <div class="export-title">Мой баланс жизни</div>
+    <canvas id="exportChart" width="400" height="300"></canvas>
+    <div class="export-watermark">тг: maytrue</div>
+</div>
 
     <div class="notification" id="notification">Данные сохранены!</div>
 
@@ -1252,87 +1252,99 @@
             }
 
             async downloadStatistics() {
-                try {
-                    this.showNotification('Создаем изображение...');
-                    
-                    // Создаем график для экспорта
-                    await this.createExportChart();
-                    
-                    // Даем время на отрисовку графика
-                    await new Promise(resolve => setTimeout(resolve, 500));
-                    
-                    const element = document.getElementById('exportContainer');
-                    const canvas = await html2canvas(element, {
-                        backgroundColor: '#fffdfa',
-                        scale: 2,
-                        logging: false,
-                        useCORS: true
-                    });
+    try {
+        this.showNotification('Создаем изображение...');
+        
+        // Показываем контейнер для экспорта
+        const exportContainer = document.getElementById('exportContainer');
+        exportContainer.style.display = 'block';
+        
+        // Создаем график для экспорта
+        await this.createExportChart();
+        
+        // Даем больше времени на отрисовку
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        
+        const canvas = await html2canvas(exportContainer, {
+            backgroundColor: '#ffffff',
+            scale: 2,
+            logging: false,
+            useCORS: true
+        });
 
-                    const link = document.createElement('a');
-                    link.download = `баланс-жизни-${this.formatDate(this.currentDate)}.png`;
-                    link.href = canvas.toDataURL('image/png');
-                    link.click();
-                    
-                    this.showNotification('Изображение сохранено!');
-                    
-                } catch (error) {
-                    console.error('Ошибка при создании изображения:', error);
-                    this.showNotification('Ошибка при сохранении');
-                }
-            }
+        // Скрываем контейнер обратно
+        exportContainer.style.display = 'none';
+
+        const link = document.createElement('a');
+        link.download = `баланс-жизни-${this.formatDate(this.currentDate)}.png`;
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+        
+        this.showNotification('Изображение сохранено!');
+        
+    } catch (error) {
+        console.error('Ошибка при создании изображения:', error);
+        this.showNotification('Ошибка при сохранении');
+    }
+}
 
             async shareStatistics() {
-                try {
-                    this.showNotification('Создаем изображение...');
-                    
-                    // Создаем график для экспорта
-                    await this.createExportChart();
-                    
-                    // Даем время на отрисовку графика
-                    await new Promise(resolve => setTimeout(resolve, 500));
-                    
-                    const element = document.getElementById('exportContainer');
-                    const canvas = await html2canvas(element, {
-                        backgroundColor: '#fffdfa',
-                        scale: 2,
-                        logging: false,
-                        useCORS: true
-                    });
+    try {
+        this.showNotification('Создаем изображение...');
+        
+        // Показываем контейнер для экспорта
+        const exportContainer = document.getElementById('exportContainer');
+        exportContainer.style.display = 'block';
+        
+        // Создаем график для экспорта
+        await this.createExportChart();
+        
+        // Даем больше времени на отрисовку
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        
+        const canvas = await html2canvas(exportContainer, {
+            backgroundColor: '#ffffff',
+            scale: 2,
+            logging: false,
+            useCORS: true
+        });
 
-                    const dataUrl = canvas.toDataURL('image/png');
-                    
-                    // Проверяем, доступен ли Web Share API
-                    if (navigator.share) {
-                        // Создаем Blob из Data URL
-                        const response = await fetch(dataUrl);
-                        const blob = await response.blob();
-                        const file = new File([blob], `баланс-жизни-${this.formatDate(this.currentDate)}.png`, {
-                            type: 'image/png'
-                        });
-                        
-                        if (navigator.canShare && navigator.canShare({ files: [file] })) {
-                            await navigator.share({
-                                files: [file],
-                                title: 'Мой баланс жизни',
-                                text: 'Посмотрите мой баланс жизни! 📊'
-                            });
-                            this.showNotification('Статистика отправлена!');
-                        } else {
-                            // Fallback для браузеров, которые не поддерживают обмен файлами
-                            this.showShareFallback(dataUrl);
-                        }
-                    } else {
-                        // Fallback для браузеров без поддержки Web Share API
-                        this.showShareFallback(dataUrl);
-                    }
-                } catch (error) {
-                    console.error('Ошибка при создании изображения:', error);
-                    if (error.name !== 'AbortError') {
-                        this.showNotification('Ошибка при отправке');
-                    }
-                }
+        // Скрываем контейнер обратно
+        exportContainer.style.display = 'none';
+
+        const dataUrl = canvas.toDataURL('image/png');
+        
+        // Проверяем, доступен ли Web Share API
+        if (navigator.share) {
+            // Создаем Blob из Data URL
+            const response = await fetch(dataUrl);
+            const blob = await response.blob();
+            const file = new File([blob], `баланс-жизни-${this.formatDate(this.currentDate)}.png`, {
+                type: 'image/png'
+            });
+            
+            if (navigator.canShare && navigator.canShare({ files: [file] })) {
+                await navigator.share({
+                    files: [file],
+                    title: 'Мой баланс жизни',
+                    text: 'Посмотрите мой баланс жизни! 📊'
+                });
+                this.showNotification('Статистика отправлена!');
+            } else {
+                // Fallback для браузеров, которые не поддерживают обмен файлами
+                this.showShareFallback(dataUrl);
             }
+        } else {
+            // Fallback для браузеров без поддержки Web Share API
+            this.showShareFallback(dataUrl);
+        }
+    } catch (error) {
+        console.error('Ошибка при создании изображения:', error);
+        if (error.name !== 'AbortError') {
+            this.showNotification('Ошибка при отправке');
+        }
+    }
+}
 
             showShareFallback(dataUrl) {
                 const newWindow = window.open();
@@ -1529,4 +1541,5 @@
     </script>
 </body>
 </html>
+
 
