@@ -35,48 +35,37 @@
         .container {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 20px;
+            padding: 0;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
         }
 
-        @media (max-width: 768px) {
-            .container {
-                padding: 16px;
-            }
-        }
-
-        .app-info {
-            text-align: left;
+        .header-section {
+            background: var(--primary-dark);
+            height: 200px;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
             margin-bottom: 20px;
-        }
-
-        .app-info-button {
-            background: none;
-            border: none;
-            color: var(--accent);
-            font-size: 14px;
-            opacity: 0.7;
-            cursor: pointer;
-            text-decoration: underline;
-            padding: 8px 16px;
+            border-bottom: 10px solid var(--accent);
         }
 
         .current-month {
             text-align: center;
-            font-size: 20px;
-            font-weight: 600;
-            margin-bottom: 10px;
-            color: var(--primary-dark);
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--primary-light);
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 12px;
+            gap: 16px;
         }
 
         .season-icon {
-            font-size: 24px;
+            font-size: 40px;
             order: 2;
         }
 
@@ -84,25 +73,76 @@
             order: 1;
         }
 
+        .app-info {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+        }
+
+        .app-info-button {
+            background: var(--primary-light);
+            border: 2px solid var(--accent);
+            color: var(--primary-dark);
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .app-info-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .app-info-button:active {
+            transform: translateY(0);
+            background: var(--accent);
+            color: var(--primary-light);
+        }
+
+        .content-section {
+            padding: 0 20px 20px;
+        }
+
+        @media (max-width: 768px) {
+            .content-section {
+                padding: 0 16px 16px;
+            }
+            
+            .current-month {
+                font-size: 24px;
+            }
+            
+            .season-icon {
+                font-size: 32px;
+            }
+        }
+
         .tabs {
             background: var(--primary-light);
             display: flex;
-            padding: 12px 20px;
+            padding: 8px;
             border-radius: 16px;
             margin-bottom: 20px;
             box-shadow: 0 2px 8px rgba(10, 41, 30, 0.1);
-            border: 1px solid rgba(10, 41, 30, 0.1);
             justify-content: center;
+            border: 2px solid var(--accent);
         }
 
         @media (max-width: 768px) {
             .tabs {
-                padding: 10px 16px;
+                padding: 6px;
             }
         }
 
         .tab-button {
-            padding: 12px 20px;
+            padding: 12px 24px;
             border: none;
             background: transparent;
             border-radius: 12px;
@@ -122,6 +162,10 @@
             background: var(--primary-dark);
             color: var(--primary-light);
             box-shadow: 0 2px 8px rgba(10, 41, 30, 0.2);
+        }
+
+        .tab-button:active {
+            transform: scale(0.95);
         }
 
         .main-content {
@@ -160,32 +204,34 @@
             padding: 20px;
             border-radius: 16px;
             box-shadow: 0 4px 12px rgba(10, 41, 30, 0.1);
-            border: 1px solid rgba(10, 41, 30, 0.1);
         }
 
         .date-selector button {
             background: var(--primary-dark);
             color: var(--primary-light);
-            border: none;
+            border: 2px solid var(--accent);
             width: 48px;
             height: 48px;
             border-radius: 24px;
             cursor: pointer;
-            transition: all 0.2s ease;
+            transition: all 0.3s ease;
             font-size: 20px;
             display: flex;
             align-items: center;
             justify-content: center;
+            box-shadow: 0 2px 8px rgba(10, 41, 30, 0.15);
         }
 
         .date-selector button:hover:not(:disabled) {
             background: var(--accent);
             transform: scale(1.05);
+            box-shadow: 0 4px 16px rgba(10, 41, 30, 0.2);
         }
 
         .date-selector button:disabled {
             background: rgba(10, 41, 30, 0.2);
             color: rgba(10, 41, 30, 0.4);
+            border-color: rgba(10, 41, 30, 0.3);
             cursor: not-allowed;
         }
 
@@ -218,14 +264,13 @@
             border-radius: 16px;
             cursor: pointer;
             transition: all 0.3s ease;
-            border: 2px solid transparent;
             box-shadow: 0 2px 8px rgba(10, 41, 30, 0.08);
         }
 
         .category-item:hover {
             transform: translateY(-2px);
             box-shadow: 0 4px 16px rgba(10, 41, 30, 0.12);
-            border-color: var(--accent);
+            background: rgba(85, 57, 34, 0.05);
         }
 
         .category-item:active {
@@ -233,8 +278,7 @@
         }
 
         .category-item.completed {
-            border-color: var(--accent);
-            background: rgba(85, 57, 34, 0.05);
+            background: rgba(85, 57, 34, 0.1);
         }
 
         .category-header {
@@ -287,7 +331,6 @@
             margin-bottom: 20px;
             text-align: center;
             box-shadow: 0 4px 12px rgba(10, 41, 30, 0.1);
-            border: 1px solid rgba(10, 41, 30, 0.1);
         }
 
         .progress-text {
@@ -331,7 +374,7 @@
             padding: 16px 20px;
             background: var(--primary-dark);
             color: var(--primary-light);
-            border: none;
+            border: 2px solid var(--accent);
             border-radius: 12px;
             cursor: pointer;
             transition: all 0.3s ease;
@@ -367,7 +410,6 @@
             padding: 20px;
             border-radius: 16px;
             box-shadow: 0 4px 12px rgba(10, 41, 30, 0.1);
-            border: 1px solid rgba(10, 41, 30, 0.1);
         }
 
         .chart-title {
@@ -393,7 +435,6 @@
             background: rgba(255, 253, 250, 0.7);
             border-radius: 8px;
             font-size: 14px;
-            border: 1px solid rgba(10, 41, 30, 0.05);
         }
 
         .category-percentage-name {
@@ -411,7 +452,6 @@
             border-radius: 16px;
             padding: 24px;
             box-shadow: 0 4px 12px rgba(10, 41, 30, 0.1);
-            border: 1px solid rgba(10, 41, 30, 0.1);
         }
 
         .recommendation-item {
@@ -452,7 +492,6 @@
             border-radius: 16px;
             padding: 24px;
             box-shadow: 0 4px 12px rgba(10, 41, 30, 0.1);
-            border: 1px solid rgba(10, 41, 30, 0.1);
             text-align: center;
         }
 
@@ -462,15 +501,15 @@
         }
 
         .app-logo {
-            width: 84px; /* Уменьшено на 30% от 120px */
-            height: 84px; /* Уменьшено на 30% от 120px */
+            width: 84px;
+            height: 84px;
             border-radius: 16px;
             object-fit: contain;
         }
 
         .logo-placeholder {
-            width: 84px; /* Уменьшено на 30% от 120px */
-            height: 84px; /* Уменьшено на 30% от 120px */
+            width: 84px;
+            height: 84px;
             margin: 0 auto 20px;
             background: rgba(85, 57, 34, 0.1);
             border-radius: 16px;
@@ -541,6 +580,7 @@
             font-weight: 500;
             max-width: 90%;
             text-align: center;
+            border: 2px solid var(--accent);
         }
 
         .notification.show {
@@ -655,105 +695,109 @@
 </head>
 <body>
     <div class="container">
-        <div class="app-info">
-            <button class="app-info-button" id="infoButton">о приложении</button>
+        <div class="header-section">
+            <div class="current-month">
+                <span class="month-name" id="monthName"></span>
+                <span class="season-icon" id="seasonIcon">🌱</span>
+            </div>
+            
+            <div class="app-info">
+                <button class="app-info-button" id="infoButton">ℹ️</button>
+            </div>
         </div>
 
-        <div class="current-month">
-            <span class="month-name" id="monthName"></span>
-            <span class="season-icon" id="seasonIcon">🌱</span>
-        </div>
-
-        <div class="tabs">
-            <button class="tab-button active" data-tab="tracker">Трекер</button>
-            <button class="tab-button" data-tab="analytics">Аналитика</button>
-            <button class="tab-button" data-tab="recommendations">Советы</button>
-        </div>
-
-        <div class="main-content">
-            <div id="tracker" class="tab-content active">
-                <div class="date-selector">
-                    <button id="prevDay">←</button>
-                    <span id="currentDate">Сегодня</span>
-                    <button id="nextDay">→</button>
-                </div>
-                
-                <div class="categories-list" id="categoriesList">
-                    <!-- Категории будут загружены через JavaScript -->
-                </div>
+        <div class="content-section">
+            <div class="tabs">
+                <button class="tab-button active" data-tab="tracker">Трекер</button>
+                <button class="tab-button" data-tab="analytics">Аналитика</button>
+                <button class="tab-button" data-tab="recommendations">Советы</button>
             </div>
 
-            <div id="analytics" class="tab-content">
-                <div class="progress-section">
-                    <div class="progress-text" id="monthlyProgressText">Прогресс за месяц: 0%</div>
-                    <div class="progress-bar">
-                        <div class="progress-fill" id="monthlyProgressFill"></div>
-                    </div>
-                </div>
-
-                <div class="export-buttons">
-                    <button class="export-button" id="shareStats">📤 Поделиться в Telegram</button>
-                </div>
-
-                <div class="charts-container">
-                    <div class="chart-container">
-                        <div class="chart-title">Прогресс по сферам</div>
-                        <canvas id="progressChart"></canvas>
-                        <div class="category-percentages" id="categoryPercentages">
-                            <!-- Проценты по сферам будут загружены через JavaScript -->
-                        </div>
-                    </div>
-                    <div class="chart-container">
-                        <div class="chart-title">Распределение активности</div>
-                        <canvas id="distributionChart"></canvas>
-                    </div>
-                </div>
-            </div>
-
-            <div id="recommendations" class="tab-content">
-                <div class="recommendations-list" id="recommendationsList">
-                    <!-- Рекомендации будут сгенерированы через JavaScript -->
-                </div>
-            </div>
-
-            <div id="info" class="tab-content">
-                <div class="info-content">
-                    <div class="logo-container">
-                        <img src="logo.png" alt="Логотип" class="app-logo" onerror="this.style.display='none'; this.parentNode.innerHTML='<div class=\'logo-placeholder\'>Логотип</div>';">
+            <div class="main-content">
+                <div id="tracker" class="tab-content active">
+                    <div class="date-selector">
+                        <button id="prevDay">←</button>
+                        <span id="currentDate">Сегодня</span>
+                        <button id="nextDay">→</button>
                     </div>
                     
-                    <div class="info-section">
-                        <h3>Как пользоваться</h3>
-                        <p>1. В разделе "Трекер" отмечайте сферы жизни, в которых вы были активны сегодня</p>
-                        <p>2. Для баланса старайтесь отмечать 3+ сферы ежедневно</p>
-                        <p>3. Данные сохраняются автоматически при выборе сфер</p>
-                        <p>4. В "Аналитике" отслеживайте прогресс за месяц</p>
-                        <p>5. Получайте персонализированные советы</p>
+                    <div class="categories-list" id="categoriesList">
+                        <!-- Категории будут загружены через JavaScript -->
+                    </div>
+                </div>
+
+                <div id="analytics" class="tab-content">
+                    <div class="progress-section">
+                        <div class="progress-text" id="monthlyProgressText">Прогресс за месяц: 0%</div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="monthlyProgressFill"></div>
+                        </div>
                     </div>
 
-                    <div class="info-section">
-                        <h3>Сферы жизни</h3>
-                        <p>• <strong>Тело</strong> - физическая активность, спорт, питание</p>
-                        <p>• <strong>Ментальное здоровье</strong> - медитация, отдых, управление стрессом</p>
-                        <p>• <strong>Смыслы</strong> - цели, миссия, ценности</p>
-                        <p>• <strong>Отношения</strong> - общение с близкими и друзьями</p>
-                        <p>• <strong>Личностный рост</strong> - обучение, чтение, хобби</p>
-                        <p>• <strong>Дело и финансы</strong> - работа, проекты, финансы</p>
-                        <p>• <strong>Природа</strong> - прогулки, контакт с природой</p>
-                        <p>• <strong>Забота о себе</strong> - сон, гигиена, режим</p>
+                    <div class="export-buttons">
+                        <button class="export-button" id="shareStats">📤 Поделиться в Telegram</button>
                     </div>
 
-                    <div class="info-section">
-                        <h3>Важная информация</h3>
-                        <p>• Трекер работает только в текущем месяце</p>
-                        <p>• Каждое 1-е число месяца статистика автоматически обнуляется</p>
-                        <p>• Это помогает сосредоточиться на текущих целях</p>
-                        <p>• Вы можете поделиться статистикой в Telegram</p>
+                    <div class="charts-container">
+                        <div class="chart-container">
+                            <div class="chart-title">Прогресс по сферам</div>
+                            <canvas id="progressChart"></canvas>
+                            <div class="category-percentages" id="categoryPercentages">
+                                <!-- Проценты по сферам будут загружены через JavaScript -->
+                            </div>
+                        </div>
+                        <div class="chart-container">
+                            <div class="chart-title">Распределение активности</div>
+                            <canvas id="distributionChart"></canvas>
+                        </div>
                     </div>
+                </div>
 
-                    <div class="developer">
-                        <p class="made-with-love">Сделано с любовью в Май</p>
-                        <p><a href="https://t.me/maytrue" target="_blank" style="color: var(--accent); text-decoration: none;">Telegram: @maytrue</a></p>
+                <div id="recommendations" class="tab-content">
+                    <div class="recommendations-list" id="recommendationsList">
+                        <!-- Рекомендации будут сгенерированы через JavaScript -->
+                    </div>
+                </div>
+
+                <div id="info" class="tab-content">
+                    <div class="info-content">
+                        <div class="logo-container">
+                            <img src="logo.png" alt="Логотип" class="app-logo" onerror="this.style.display='none'; this.parentNode.innerHTML='<div class=\'logo-placeholder\'>Логотип</div>';">
+                        </div>
+                        
+                        <div class="info-section">
+                            <h3>Как пользоваться</h3>
+                            <p>1. В разделе "Трекер" отмечайте сферы жизни, в которых вы были активны сегодня</p>
+                            <p>2. Для баланса старайтесь отмечать 3+ сферы ежедневно</p>
+                            <p>3. Данные сохраняются автоматически при выборе сфер</p>
+                            <p>4. В "Аналитике" отслеживайте прогресс за месяц</p>
+                            <p>5. Получайте персонализированные советы</p>
+                        </div>
+
+                        <div class="info-section">
+                            <h3>Сферы жизни</h3>
+                            <p>• <strong>Тело</strong> - физическая активность, спорт, питание</p>
+                            <p>• <strong>Ментальное здоровье</strong> - медитация, отдых, управление стрессом</p>
+                            <p>• <strong>Смыслы</strong> - цели, миссия, ценности</p>
+                            <p>• <strong>Отношения</strong> - общение с близкими и друзьями</p>
+                            <p>• <strong>Личностный рост</strong> - обучение, чтение, хобби</p>
+                            <p>• <strong>Дело и финансы</strong> - работа, проекты, финансы</p>
+                            <p>• <strong>Природа</strong> - прогулки, контакт с природой</p>
+                            <p>• <strong>Забота о себе</strong> - сон, гигиена, режим</p>
+                        </div>
+
+                        <div class="info-section">
+                            <h3>Важная информация</h3>
+                            <p>• Трекер работает только в текущем месяце</p>
+                            <p>• Каждое 1-е число месяца статистика автоматически обнуляется</p>
+                            <p>• Это помогает сосредоточиться на текущих целях</p>
+                            <p>• Вы можете поделиться статистикой в Telegram</p>
+                        </div>
+
+                        <div class="developer">
+                            <p class="made-with-love">Сделано с любовью в Май</p>
+                            <p><a href="https://t.me/maytrue" target="_blank" style="color: var(--accent); text-decoration: none;">Telegram: @maytrue</a></p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -1368,7 +1412,7 @@
                             await navigator.share({
                                 files: [file],
                                 title: 'Мой баланс жизни',
-                                text: 'Посмотрите мой баланс жизни! 📊'
+                                text: 'Посмотрите мой баланс жизни! 📊\n\nПодробнее: t.me/maytrue'
                             });
                             this.hideProgress();
                             this.showNotification('Статистика отправлена!');
@@ -1457,6 +1501,12 @@
                                 margin: 10px;
                                 cursor: pointer;
                             }
+                            .telegram-link {
+                                margin: 15px 0;
+                                color: #0088cc;
+                                font-size: 16px;
+                                text-decoration: none;
+                            }
                         </style>
                     </head>
                     <body>
@@ -1469,6 +1519,9 @@
                                 <p>3. Отправьте в чат Telegram</p>
                             </div>
                             <img src="${dataUrl}" alt="Баланс жизни">
+                            <div>
+                                <a href="https://t.me/maytrue" target="_blank" class="telegram-link">📢 Подписаться на канал: t.me/maytrue</a>
+                            </div>
                             <div>
                                 <a href="${dataUrl}" download="баланс-жизни.png" class="button">Скачать изображение</a>
                             </div>
