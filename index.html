@@ -12,9 +12,8 @@
             --primary-light: #fffdfa;
             --primary-dark: #0a291e;
             --accent: #553922;
-            --bg-light: rgba(255, 253, 250, 0.6);
-            --bg-dark: rgba(10, 41, 30, 0.3);
-            --bg-accent: rgba(85, 57, 34, 0.1);
+            --shadow: 0 8px 32px rgba(10, 41, 30, 0.2);
+            --shadow-hover: 0 12px 40px rgba(10, 41, 30, 0.3);
         }
 
         * {
@@ -26,150 +25,105 @@
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: #ffffff;
+            background: var(--primary-dark);
             color: var(--primary-dark);
             min-height: 100vh;
             line-height: 1.4;
         }
 
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0;
+        .app-container {
             min-height: 100vh;
             display: flex;
             flex-direction: column;
         }
 
-        .header-section {
-            background: var(--primary-dark);
-            height: 120px;
-            width: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        /* Header */
+        .header {
+            background: var(--primary-light);
+            border-bottom: 8px solid var(--accent);
+            padding: 16px 20px;
+            box-shadow: var(--shadow);
             position: relative;
-            margin-bottom: 20px;
-            border-bottom: 10px solid var(--accent);
+            z-index: 10;
+            border-radius: 0 0 24px 24px;
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
         }
 
         .current-month {
             text-align: center;
-            font-size: 32px;
+            font-size: 24px;
             font-weight: 700;
-            color: var(--primary-light);
+            color: var(--primary-dark);
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 16px;
+            gap: 12px;
         }
 
         .season-icon {
-            font-size: 40px;
-            order: 2;
+            font-size: 28px;
         }
 
         .month-name {
             order: 1;
         }
 
-        .app-info {
-            position: absolute;
-            top: 18px;
-            right: 18px;
-        }
-
-        .app-info-button {
-            background: var(--primary-light);
-            border: 2px solid var(--accent);
-            color: var(--primary-dark);
-            width: 35px;
-            height: 35px;
-            border-radius: 12px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-size: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-        }
-
-        .app-info-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
-        }
-
-        .app-info-button:active {
-            transform: translateY(0);
-            background: var(--accent);
-            color: var(--primary-light);
-        }
-
-        .content-section {
-            padding: 0 20px 20px;
-        }
-
-        @media (max-width: 768px) {
-            .content-section {
-                padding: 0 16px 16px;
-            }
-            
-            .current-month {
-                font-size: 24px;
-            }
-            
-            .season-icon {
-                font-size: 32px;
-            }
-        }
-
         .tabs {
-            background: var(--primary-light);
             display: flex;
+            background: var(--primary-light);
             padding: 8px;
-            border-radius: 16px;
-            margin-bottom: 20px;
-            box-shadow: 0 2px 8px rgba(10, 41, 30, 0.1);
-            justify-content: center;
-        }
-
-        @media (max-width: 768px) {
-            .tabs {
-                padding: 6px;
-            }
+            border-radius: 20px;
+            border: 2px solid var(--accent);
+            box-shadow: 0 4px 16px rgba(85, 57, 34, 0.1);
         }
 
         .tab-button {
-            padding: 12px 24px;
+            flex: 1;
+            padding: 12px 20px;
             border: none;
-            background: transparent;
-            border-radius: 12px;
+            background: var(--primary-light);
+            border-radius: 16px;
             cursor: pointer;
             transition: all 0.3s ease;
             font-weight: 600;
             color: var(--primary-dark);
             font-size: 16px;
-            margin: 0 4px;
+            border: 2px solid transparent;
         }
 
         .tab-button:hover {
-            background: rgba(10, 41, 30, 0.1);
+            background: rgba(85, 57, 34, 0.05);
+            border-color: var(--accent);
         }
 
         .tab-button.active {
-            background: var(--primary-dark);
+            background: var(--accent);
             color: var(--primary-light);
-            box-shadow: 0 2px 8px rgba(10, 41, 30, 0.2);
+            box-shadow: 0 4px 16px rgba(85, 57, 34, 0.2);
+            border-color: var(--accent);
         }
 
         .tab-button:active {
             transform: scale(0.95);
         }
 
-        .main-content {
+        /* Body */
+        .body {
             flex: 1;
-            margin-bottom: 20px;
+            padding: 24px 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .main-content {
             display: grid;
             grid-template-columns: 1fr;
             gap: 20px;
@@ -178,10 +132,6 @@
         @media (min-width: 1024px) {
             .main-content {
                 grid-template-columns: 1fr 1fr;
-            }
-            
-            .main-content > * {
-                min-height: 400px;
             }
         }
 
@@ -194,20 +144,30 @@
             display: block;
         }
 
+        /* Cards and Forms */
+        .card {
+            background: var(--primary-light);
+            border-radius: 20px;
+            padding: 24px;
+            box-shadow: var(--shadow);
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            box-shadow: var(--shadow-hover);
+        }
+
         .date-selector {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 20px;
-            background: var(--primary-light);
-            padding: 20px;
-            border-radius: 16px;
-            box-shadow: 0 4px 12px rgba(10, 41, 30, 0.1);
         }
 
         .date-selector button {
-            background: var(--primary-dark);
-            color: var(--primary-light);
+            background: var(--primary-light);
+            color: var(--primary-dark);
             border: 2px solid var(--accent);
             width: 48px;
             height: 48px;
@@ -218,19 +178,20 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 2px 8px rgba(10, 41, 30, 0.15);
+            box-shadow: 0 4px 16px rgba(85, 57, 34, 0.1);
         }
 
         .date-selector button:hover:not(:disabled) {
             background: var(--accent);
+            color: var(--primary-light);
             transform: scale(1.05);
-            box-shadow: 0 4px 16px rgba(10, 41, 30, 0.2);
+            box-shadow: 0 6px 20px rgba(85, 57, 34, 0.2);
         }
 
         .date-selector button:disabled {
-            background: rgba(10, 41, 30, 0.2);
+            background: rgba(255, 253, 250, 0.5);
             color: rgba(10, 41, 30, 0.4);
-            border-color: rgba(10, 41, 30, 0.3);
+            border-color: rgba(85, 57, 34, 0.3);
             cursor: not-allowed;
         }
 
@@ -247,7 +208,7 @@
         .categories-list {
             display: grid;
             grid-template-columns: 1fr;
-            gap: 12px;
+            gap: 16px;
             margin-bottom: 20px;
         }
 
@@ -263,21 +224,23 @@
             border-radius: 16px;
             cursor: pointer;
             transition: all 0.3s ease;
-            box-shadow: 0 2px 8px rgba(10, 41, 30, 0.08);
+            box-shadow: 0 4px 16px rgba(85, 57, 34, 0.1);
+            border: 2px solid transparent;
         }
 
         .category-item:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 16px rgba(10, 41, 30, 0.12);
-            background: rgba(85, 57, 34, 0.05);
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(85, 57, 34, 0.15);
+            border-color: var(--accent);
         }
 
         .category-item:active {
-            transform: translateY(0);
+            transform: translateY(-2px);
         }
 
         .category-item.completed {
-            background: rgba(85, 57, 34, 0.1);
+            background: rgba(85, 57, 34, 0.05);
+            border-color: var(--accent);
         }
 
         .category-header {
@@ -297,7 +260,7 @@
             width: 24px;
             height: 24px;
             border: 2px solid var(--primary-dark);
-            border-radius: 6px;
+            border-radius: 8px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -324,12 +287,8 @@
         }
 
         .progress-section {
-            background: var(--primary-light);
-            padding: 24px;
-            border-radius: 16px;
-            margin-bottom: 20px;
             text-align: center;
-            box-shadow: 0 4px 12px rgba(10, 41, 30, 0.1);
+            margin-bottom: 20px;
         }
 
         .progress-text {
@@ -343,15 +302,16 @@
             width: 100%;
             height: 12px;
             background-color: rgba(10, 41, 30, 0.1);
-            border-radius: 6px;
+            border-radius: 8px;
             overflow: hidden;
             margin: 16px 0;
+            border: 1px solid var(--accent);
         }
 
         .progress-fill {
             height: 100%;
             background: linear-gradient(90deg, var(--accent), var(--primary-dark));
-            border-radius: 6px;
+            border-radius: 8px;
             transition: width 0.5s ease;
             width: 0%;
         }
@@ -371,25 +331,26 @@
         .export-button {
             flex: 1;
             padding: 16px 20px;
-            background: var(--primary-dark);
-            color: var(--primary-light);
+            background: var(--primary-light);
+            color: var(--primary-dark);
             border: 2px solid var(--accent);
-            border-radius: 12px;
+            border-radius: 16px;
             cursor: pointer;
             transition: all 0.3s ease;
             font-weight: 600;
             font-size: 16px;
-            box-shadow: 0 2px 8px rgba(10, 41, 30, 0.15);
+            box-shadow: 0 4px 16px rgba(85, 57, 34, 0.1);
         }
 
         .export-button:hover {
             background: var(--accent);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 16px rgba(10, 41, 30, 0.2);
+            color: var(--primary-light);
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(85, 57, 34, 0.2);
         }
 
         .export-button:active {
-            transform: translateY(0);
+            transform: translateY(-2px);
         }
 
         .charts-container {
@@ -407,8 +368,8 @@
         .chart-container {
             background: var(--primary-light);
             padding: 20px;
-            border-radius: 16px;
-            box-shadow: 0 4px 12px rgba(10, 41, 30, 0.1);
+            border-radius: 20px;
+            box-shadow: var(--shadow);
         }
 
         .chart-title {
@@ -422,7 +383,7 @@
         .category-percentages {
             display: grid;
             grid-template-columns: 1fr;
-            gap: 8px;
+            gap: 12px;
             margin-top: 16px;
         }
 
@@ -430,10 +391,11 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 12px 16px;
-            background: rgba(255, 253, 250, 0.7);
-            border-radius: 8px;
+            padding: 16px;
+            background: rgba(255, 253, 250, 0.8);
+            border-radius: 12px;
             font-size: 14px;
+            border: 1px solid var(--accent);
         }
 
         .category-percentage-name {
@@ -448,17 +410,18 @@
 
         .recommendations-list {
             background: var(--primary-light);
-            border-radius: 16px;
+            border-radius: 20px;
             padding: 24px;
-            box-shadow: 0 4px 12px rgba(10, 41, 30, 0.1);
+            box-shadow: var(--shadow);
         }
 
         .recommendation-item {
-            padding: 16px;
-            margin-bottom: 12px;
+            padding: 20px;
+            margin-bottom: 16px;
             background: var(--primary-light);
             border-left: 4px solid var(--accent);
-            border-radius: 8px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(85, 57, 34, 0.1);
         }
 
         .recommendation-item h4 {
@@ -476,9 +439,9 @@
 
         .inspiration-quote {
             background: rgba(85, 57, 34, 0.1);
-            padding: 16px;
+            padding: 20px;
             margin: 20px 0;
-            border-radius: 12px;
+            border-radius: 16px;
             border-left: 4px solid var(--accent);
             font-style: italic;
             text-align: center;
@@ -488,9 +451,9 @@
 
         .info-content {
             background: var(--primary-light);
-            border-radius: 16px;
+            border-radius: 20px;
             padding: 24px;
-            box-shadow: 0 4px 12px rgba(10, 41, 30, 0.1);
+            box-shadow: var(--shadow);
             text-align: center;
         }
 
@@ -500,22 +463,24 @@
         }
 
         .app-logo {
-            width: 84px;
-            height: 84px;
-            border-radius: 16px;
+            width: 100px;
+            height: 100px;
+            border-radius: 20px;
             object-fit: contain;
+            border: 2px solid var(--accent);
+            box-shadow: 0 4px 16px rgba(85, 57, 34, 0.2);
         }
 
         .logo-placeholder {
-            width: 84px;
-            height: 84px;
+            width: 100px;
+            height: 100px;
             margin: 0 auto 20px;
             background: rgba(85, 57, 34, 0.1);
-            border-radius: 16px;
+            border-radius: 20px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 12px;
+            font-size: 14px;
             color: var(--accent);
             border: 2px dashed var(--accent);
         }
@@ -527,7 +492,7 @@
 
         .info-section h3 {
             color: var(--accent);
-            margin-bottom: 12px;
+            margin-bottom: 16px;
             font-size: 18px;
             font-weight: 600;
             text-align: center;
@@ -537,23 +502,43 @@
             color: var(--primary-dark);
             line-height: 1.5;
             font-size: 15px;
-            margin-bottom: 10px;
+            margin-bottom: 12px;
         }
 
-        .developer {
+        /* Footer */
+        .footer {
+            background: var(--primary-light);
+            border-top: 8px solid var(--accent);
+            padding: 20px;
             text-align: center;
-            margin-top: 24px;
-            padding-top: 20px;
-            border-top: 1px solid rgba(10, 41, 30, 0.1);
+            box-shadow: 0 -4px 20px rgba(10, 41, 30, 0.1);
+            border-radius: 24px 24px 0 0;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
         }
 
         .made-with-love {
             font-style: italic;
             color: var(--accent);
-            margin-bottom: 12px;
-            font-size: 15px;
+            margin-bottom: 8px;
+            font-size: 16px;
         }
 
+        .telegram-link {
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        .telegram-link:hover {
+            text-decoration: underline;
+        }
+
+        /* Animations and Utilities */
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
@@ -568,11 +553,11 @@
             top: -100px;
             left: 50%;
             transform: translateX(-50%);
-            background: var(--primary-dark);
-            color: var(--primary-light);
+            background: var(--primary-light);
+            color: var(--primary-dark);
             padding: 16px 24px;
-            border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(10, 41, 30, 0.2);
+            border-radius: 16px;
+            box-shadow: var(--shadow-hover);
             transition: transform 0.3s ease;
             z-index: 1000;
             font-size: 15px;
@@ -583,15 +568,15 @@
         }
 
         .notification.show {
-            transform: translateX(-50%) translateY(150px);
+            transform: translateX(-50%) translateY(120px);
         }
 
         .export-container {
             background: var(--primary-light);
             padding: 40px;
-            border-radius: 20px;
+            border-radius: 24px;
             text-align: center;
-            box-shadow: 0 8px 32px rgba(10, 41, 30, 0.1);
+            box-shadow: var(--shadow-hover);
             max-width: 500px;
             margin: 0 auto;
             position: fixed;
@@ -619,6 +604,8 @@
             height: 80px;
             margin-bottom: 15px;
             object-fit: contain;
+            border-radius: 16px;
+            border: 2px solid var(--accent);
         }
 
         .progress-overlay {
@@ -627,7 +614,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(255, 255, 255, 0.9);
+            background: rgba(10, 41, 30, 0.9);
             display: none;
             justify-content: center;
             align-items: center;
@@ -642,7 +629,7 @@
 
         .progress-info {
             font-size: 18px;
-            color: var(--primary-dark);
+            color: var(--primary-light);
             font-weight: 600;
         }
 
@@ -650,14 +637,15 @@
             width: 80%;
             max-width: 300px;
             height: 8px;
-            background: rgba(10, 41, 30, 0.1);
+            background: rgba(255, 253, 250, 0.2);
             border-radius: 4px;
             overflow: hidden;
+            border: 1px solid var(--accent);
         }
 
         .progress-fill-overlay {
             height: 100%;
-            background: linear-gradient(90deg, var(--accent), var(--primary-dark));
+            background: linear-gradient(90deg, var(--accent), var(--primary-light));
             border-radius: 4px;
             transition: width 0.3s ease;
             width: 0%;
@@ -666,141 +654,132 @@
         /* Поддержка темной темы */
         @media (prefers-color-scheme: dark) {
             body {
-                background: #ffffff;
-                color: var(--primary-dark);
-            }
-            
-            .date-selector,
-            .category-item,
-            .progress-section,
-            .chart-container,
-            .recommendations-list,
-            .info-content,
-            .tabs,
-            .export-container {
-                background: rgba(255, 253, 250, 0.95);
-            }
-            
-            .category-description,
-            .info-section p {
-                color: var(--primary-dark);
-            }
-
-            .progress-overlay {
-                background: rgba(255, 255, 255, 0.95);
+                background: var(--primary-dark);
             }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header-section">
-            <div class="current-month">
-                <span class="month-name" id="monthName"></span>
-                <span class="season-icon" id="seasonIcon">🌱</span>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <div class="current-month">
+                    <span class="month-name" id="monthName"></span>
+                    <span class="season-icon" id="seasonIcon">🌱</span>
+                </div>
+                
+                <div class="tabs">
+                    <button class="tab-button active" data-tab="tracker">Трекер</button>
+                    <button class="tab-button" data-tab="analytics">Аналитика</button>
+                    <button class="tab-button" data-tab="recommendations">Советы</button>
+                    <button class="tab-button" data-tab="info">О приложении</button>
+                </div>
             </div>
-            
-            <div class="app-info">
-                <button class="app-info-button" id="infoButton">ℹ️</button>
-            </div>
-        </div>
+        </header>
 
-        <div class="content-section">
-            <div class="tabs">
-                <button class="tab-button active" data-tab="tracker">Трекер</button>
-                <button class="tab-button" data-tab="analytics">Аналитика</button>
-                <button class="tab-button" data-tab="recommendations">Советы</button>
-            </div>
-
+        <!-- Body -->
+        <main class="body">
             <div class="main-content">
                 <div id="tracker" class="tab-content active">
-                    <div class="date-selector">
-                        <button id="prevDay">←</button>
-                        <span id="currentDate">Сегодня</span>
-                        <button id="nextDay">→</button>
-                    </div>
-                    
-                    <div class="categories-list" id="categoriesList">
-                        <!-- Категории будут загружены через JavaScript -->
+                    <div class="card">
+                        <div class="date-selector">
+                            <button id="prevDay">←</button>
+                            <span id="currentDate">Сегодня</span>
+                            <button id="nextDay">→</button>
+                        </div>
+                        
+                        <div class="categories-list" id="categoriesList">
+                            <!-- Категории будут загружены через JavaScript -->
+                        </div>
                     </div>
                 </div>
 
                 <div id="analytics" class="tab-content">
-                    <div class="progress-section">
-                        <div class="progress-text" id="monthlyProgressText">Прогресс за месяц: 0%</div>
-                        <div class="progress-bar">
-                            <div class="progress-fill" id="monthlyProgressFill"></div>
-                        </div>
-                    </div>
-
-                    <div class="export-buttons">
-                        <button class="export-button" id="shareStats">📤 Поделиться в Telegram</button>
-                    </div>
-
-                    <div class="charts-container">
-                        <div class="chart-container">
-                            <div class="chart-title">Прогресс по сферам</div>
-                            <canvas id="progressChart"></canvas>
-                            <div class="category-percentages" id="categoryPercentages">
-                                <!-- Проценты по сферам будут загружены через JavaScript -->
+                    <div class="card">
+                        <div class="progress-section">
+                            <div class="progress-text" id="monthlyProgressText">Прогресс за месяц: 0%</div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" id="monthlyProgressFill"></div>
                             </div>
                         </div>
-                        <div class="chart-container">
-                            <div class="chart-title">Распределение активности</div>
-                            <canvas id="distributionChart"></canvas>
+
+                        <div class="export-buttons">
+                            <button class="export-button" id="shareStats">📤 Поделиться в Telegram</button>
+                        </div>
+
+                        <div class="charts-container">
+                            <div class="chart-container">
+                                <div class="chart-title">Прогресс по сферам</div>
+                                <canvas id="progressChart"></canvas>
+                                <div class="category-percentages" id="categoryPercentages">
+                                    <!-- Проценты по сферам будут загружены через JavaScript -->
+                                </div>
+                            </div>
+                            <div class="chart-container">
+                                <div class="chart-title">Распределение активности</div>
+                                <canvas id="distributionChart"></canvas>
+                            </div>
                         </div>
                     </div>
                 </div>
 
                 <div id="recommendations" class="tab-content">
-                    <div class="recommendations-list" id="recommendationsList">
-                        <!-- Рекомендации будут сгенерированы через JavaScript -->
+                    <div class="card">
+                        <div class="recommendations-list" id="recommendationsList">
+                            <!-- Рекомендации будут сгенерированы через JavaScript -->
+                        </div>
                     </div>
                 </div>
 
                 <div id="info" class="tab-content">
-                    <div class="info-content">
-                        <div class="logo-container">
-                            <img src="logo.png" alt="Логотип" class="app-logo" onerror="this.style.display='none'; this.parentNode.innerHTML='<div class=\'logo-placeholder\'>Логотип</div>';">
-                        </div>
-                        
-                        <div class="info-section">
-                            <h3>Как пользоваться</h3>
-                            <p>1. В разделе "Трекер" отмечайте сферы жизни, в которых вы были активны сегодня</p>
-                            <p>2. Для баланса старайтесь отмечать 3+ сферы ежедневно</p>
-                            <p>3. Данные сохраняются автоматически при выборе сфер</p>
-                            <p>4. В "Аналитике" отслеживайте прогресс за месяц</p>
-                            <p>5. Получайте персонализированные советы</p>
-                        </div>
+                    <div class="card">
+                        <div class="info-content">
+                            <div class="logo-container">
+                                <img src="logo.png" alt="Логотип" class="app-logo" onerror="this.style.display='none'; this.parentNode.innerHTML='<div class=\'logo-placeholder\'>Логотип</div>';">
+                            </div>
+                            
+                            <div class="info-section">
+                                <h3>Как пользоваться</h3>
+                                <p>1. В разделе "Трекер" отмечайте сферы жизни, в которых вы были активны сегодня</p>
+                                <p>2. Для баланса старайтесь отмечать 3+ сферы ежедневно</p>
+                                <p>3. Данные сохраняются автоматически при выборе сфер</p>
+                                <p>4. В "Аналитике" отслеживайте прогресс за месяц</p>
+                                <p>5. Получайте персонализированные советы</p>
+                            </div>
 
-                        <div class="info-section">
-                            <h3>Сферы жизни</h3>
-                            <p>• <strong>Тело</strong> - физическая активность, спорт, питание</p>
-                            <p>• <strong>Ментальное здоровье</strong> - медитация, отдых, управление стрессом</p>
-                            <p>• <strong>Смыслы</strong> - цели, миссия, ценности</p>
-                            <p>• <strong>Отношения</strong> - общение с близкими и друзьями</p>
-                            <p>• <strong>Личностный рост</strong> - обучение, чтение, хобби</p>
-                            <p>• <strong>Дело и финансы</strong> - работа, проекты, финансы</p>
-                            <p>• <strong>Природа</strong> - прогулки, контакт с природой</p>
-                            <p>• <strong>Забота о себе</strong> - сон, гигиена, режим</p>
-                        </div>
+                            <div class="info-section">
+                                <h3>Сферы жизни</h3>
+                                <p>• <strong>Тело</strong> - физическая активность, спорт, питание</p>
+                                <p>• <strong>Ментальное здоровье</strong> - медитация, отдых, управление стрессом</p>
+                                <p>• <strong>Смыслы</strong> - цели, миссия, ценности</p>
+                                <p>• <strong>Отношения</strong> - общение с близкими и друзьями</p>
+                                <p>• <strong>Личностный рост</strong> - обучение, чтение, хобби</p>
+                                <p>• <strong>Дело и финансы</strong> - работа, проекты, финансы</p>
+                                <p>• <strong>Природа</strong> - прогулки, контакт с природой</p>
+                                <p>• <strong>Забота о себе</strong> - сон, гигиена, режим</p>
+                            </div>
 
-                        <div class="info-section">
-                            <h3>Важная информация</h3>
-                            <p>• Трекер работает только в текущем месяце</p>
-                            <p>• Каждое 1-е число месяца статистика автоматически обнуляется</p>
-                            <p>• Это помогает сосредоточиться на текущих целях</p>
-                            <p>• Вы можете поделиться статистикой в Telegram</p>
-                        </div>
-
-                        <div class="developer">
-                            <p class="made-with-love">Сделано с любовью в Май</p>
-                            <p><a href="https://t.me/maytrue" target="_blank" style="color: var(--accent); text-decoration: none;">Telegram: @maytrue</a></p>
+                            <div class="info-section">
+                                <h3>Важная информация</h3>
+                                <p>• Трекер работает только в текущем месяце</p>
+                                <p>• Каждое 1-е число месяца статистика автоматически обнуляется</p>
+                                <p>• Это помогает сосредоточиться на текущих целях</p>
+                                <p>• Вы можете поделиться статистикой в Telegram</p>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="footer-content">
+                <p class="made-with-love">Сделано с любовью в Май</p>
+                <a href="https://t.me/maytrue" target="_blank" class="telegram-link">t.me/maytrue</a>
+            </div>
+        </footer>
     </div>
 
     <!-- Контейнер для экспорта статистики (скрытый) -->
@@ -993,10 +972,6 @@
                     }
                 });
 
-                document.getElementById('infoButton').addEventListener('click', () => {
-                    this.switchTab('info');
-                });
-
                 document.getElementById('shareStats').addEventListener('click', () => {
                     this.shareStatistics();
                 });
@@ -1019,9 +994,7 @@
                 });
                 
                 document.getElementById(tabName).classList.add('active');
-                if (tabName !== 'info') {
-                    document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
-                }
+                document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
 
                 if (tabName === 'analytics') {
                     this.loadAnalytics();
@@ -1661,6 +1634,3 @@
     </script>
 </body>
 </html>
-
-
-
